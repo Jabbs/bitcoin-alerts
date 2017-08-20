@@ -400,11 +400,7 @@ GEM
     parser (2.3.3.1)
       ast (~> 2.2)
     path_expander (1.0.1)
-    pg (0.21.0)
-    pg_search (2.0.1)
-      activerecord (>= 4.2)
-      activesupport (>= 4.2)
-      arel (>= 6)
+    pg (0.20.0)
     phantomjs (2.1.1.0)
     placeholder-gem (3.0.2)
       railties (>= 3.1)
@@ -677,8 +673,7 @@ DEPENDENCIES
   metric_fu
   mini_magick
   omniauth-facebook
-  pg
-  pg_search
+  pg (= 0.20.0)
   phantomjs
   placeholder-gem
   pry
