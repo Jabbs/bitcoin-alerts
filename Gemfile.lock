@@ -416,7 +416,6 @@ GEM
     pry-nav (0.2.4)
       pry (>= 0.9.10, < 0.11.0)
     public_suffix (2.0.5)
-    puma (3.8.1)
     rack (1.6.8)
     rack-pjax (0.8.0)
       nokogiri (~> 1.5)
@@ -565,15 +564,6 @@ GEM
       rubyzip (~> 1.0)
       websocket (~> 1.0)
     sexp_processor (4.8.0)
-    sidekiq (4.2.9)
-      concurrent-ruby (~> 1.0)
-      connection_pool (~> 2.2, >= 2.2.0)
-      rack-protection (>= 1.5.0)
-      redis (~> 3.2, >= 3.2.1)
-    sidekiq-failures (0.4.5)
-      sidekiq (>= 2.16.0)
-    sidekiq-status (0.6.0)
-      sidekiq (>= 2.7)
     simplecov (0.13.0)
       docile (~> 1.1.0)
       json (>= 1.8, < 3)
@@ -601,6 +591,9 @@ GEM
     tilt (2.0.8)
     timecop (0.8.1)
     trollop (2.1.2)
+    turbolinks (5.0.1)
+      turbolinks-source (~> 5)
+    turbolinks-source (5.0.3)
     tzinfo (1.2.3)
       thread_safe (~> 0.1)
     uglifier (3.2.0)
@@ -680,7 +673,6 @@ DEPENDENCIES
   placeholder-gem
   pry
   pry-nav
-  puma
   rack-timeout
   rails (~> 4.2.0)
   rails_12factor
@@ -698,13 +690,11 @@ DEPENDENCIES
   sdoc (~> 0.4.0)
   seedbank
   selenium-webdriver (~> 2.53.4)
-  sidekiq
-  sidekiq-failures
-  sidekiq-status
   simplecov
   sinatra
   teaspoon-jasmine
   timecop
+  turbolinks
   uglifier
   underscore-rails
   vcr
