@@ -1,7 +1,9 @@
-# This file should contain all the record creation needed to seed the database with its default values.
-# The data can then be loaded with the rake db:seed (or created alongside the db with db:setup).
+# require 'csv'
 #
-# Examples:
-#
-#   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
-#   Mayor.create(name: 'Emanuel', city: cities.first)
+# if Rails.env.development?
+#   CSV.foreach("lib/assets/bitcoinity_data.csv", headers: true, :encoding => 'windows-1251:utf-8') do |row|
+#     time = row[0].to_datetime
+#     price = row[5].to_f
+#     BitcoinQuote.create!(created_at: time, bid: price, ask: price, spot: price, currency: "USD")
+#   end
+# end

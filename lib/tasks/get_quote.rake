@@ -7,5 +7,6 @@ namespace :bitcoin do
     bid = client.sell_price({currency_pair: 'BTC-USD'})["amount"].to_f
     spot = client.spot_price({currency_pair: 'BTC-USD'})["amount"].to_f
     BitcoinQuote.create!(bid: bid, ask: ask, spot: spot, currency: "USD")
+    BitcoinQuote.check_strategies
   end
 end

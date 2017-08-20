@@ -47,6 +47,7 @@ gem 'sidekiq'
 gem 'sidekiq-failures'
 gem 'sidekiq-status'
 gem 'sinatra', require: false
+gem 'slack-ruby-client'
 gem 'turbolinks'
 gem 'uglifier'
 gem 'underscore-rails'
