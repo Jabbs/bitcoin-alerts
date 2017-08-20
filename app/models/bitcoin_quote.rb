@@ -22,7 +22,7 @@ class BitcoinQuote < ActiveRecord::Base
 
   def self.send_slack_notification(message)
     client = Slack::Web::Client.new
-    channel = Rails.env.production? ? "#transactions-bitcoin" : "#transactions-dev"
+    channel = Rails.env.production? ? "#bitcoin-alerts" : "#transactions-dev"
     username = "Bitcoinbot"
     icon_url = "https://image.freepik.com/free-icon/bitcoin-btc_318-41696.jpg"
     message = "<!channel>   " + message
