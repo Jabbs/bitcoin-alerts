@@ -1,6 +1,6 @@
 require 'coinbase/wallet'
 namespace :bitcoin do
-  desc 'Get all Nasdaq stock quotes'
+  desc 'Get quote from Coinbase'
   task :get_quote => :environment do
     client = Coinbase::Wallet::Client.new(api_key: "", api_secret: "")
     ask = client.buy_price({currency_pair: 'BTC-USD'})["amount"].to_f
