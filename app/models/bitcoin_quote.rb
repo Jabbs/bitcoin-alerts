@@ -6,14 +6,14 @@ class BitcoinQuote < ActiveRecord::Base
 
   def self.check_strategies(quote=recent_quote)
     raise "No recent quote for comparison!" unless quote.present?
-    message = quote.check_for_buy_strategy_message(4, 8)
-    BitcoinQuote.send_slack_notification(message) if message.present?
-    message = quote.check_for_buy_strategy_message(5, 10)
-    BitcoinQuote.send_slack_notification(message) if message.present?
-    message = quote.check_for_buy_strategy_message(8, 16)
-    BitcoinQuote.send_slack_notification(message) if message.present?
-    message = quote.check_for_buy_strategy_message(10, 24)
-    BitcoinQuote.send_slack_notification(message) if message.present?
+    Strategy.all.each do |strategy|
+      next if strategy.last_alert_sent_at.present? && strategy.last_alert_sent_at > 30.minutes.ago
+      message = quote.check_for_buy_strategy_message(strategy.percent_change, strategy.lookback_hours)
+      if message.present?
+        BitcoinQuote.send_slack_notification(message)
+        strategy.update_column(:last_alert_sent_at, Time.zone.now)
+      end
+    end
   end
 
   def self.recent_quote(lookback_minutes=2)
@@ -29,13 +29,13 @@ class BitcoinQuote < ActiveRecord::Base
     client.chat_postMessage(channel: channel, text: message.html_safe, as_user: false, username: username, icon_url: icon_url)
   end
 
-  def check_for_buy_strategy_message(percent_decrease, lookback_in_hours)
+  def check_for_buy_strategy_message(percent_decrease, lookback_hours)
     current_amt = self.ask
-    BitcoinQuote.where("created_at > ?", self.created_at - lookback_in_hours.hours).where("created_at < ?", self.created_at).order("created_at desc").each do |quote|
+    BitcoinQuote.where("created_at > ?", self.created_at - lookback_hours.hours).where("created_at < ?", self.created_at).order("created_at desc").each do |quote|
       previous_amt = quote.ask
       percent_change = Numbers.percent_change(current_amt, previous_amt)
       if percent_change <= -percent_decrease
-        strategy = "_#{percent_decrease}% THRESHOLD HIT (LOOKING BACK #{lookback_in_hours} HOURS)_ \n"
+        strategy = "_#{percent_decrease}% THRESHOLD HIT (LOOKING BACK #{lookback_hours} HOURS)_ \n"
         return "#{strategy}   *#{percent_change}%*   ($#{previous_amt.round(2)} -> $#{current_amt.round(2)})   |   #{quote.pretty_cst_time} -> #{self.pretty_cst_time}"
       end
     end
