@@ -19,7 +19,7 @@ class Quote < ActiveRecord::Base
   def self.check_for_passing_strategies(quotes)
     quotes.each do |quote|
       quote.check_and_update_passing_strategy_ids(Strategy.all)
-      quote.reload.process_strategies
+      quote.process_strategies
     end
   end
 
