@@ -11,24 +11,27 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170821134120) do
+ActiveRecord::Schema.define(version: 20170821183503) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "bitcoin_quotes", force: :cascade do |t|
-    t.decimal  "bid",        null: false
-    t.decimal  "ask",        null: false
-    t.decimal  "spot",       null: false
-    t.string   "currency",   null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+  create_table "quotes", force: :cascade do |t|
+    t.string   "currency_pair",                           null: false
+    t.decimal  "bid",           precision: 15, scale: 2,  null: false
+    t.decimal  "ask",           precision: 15, scale: 2,  null: false
+    t.decimal  "price",         precision: 15, scale: 2,  null: false
+    t.decimal  "size",          precision: 20, scale: 10, null: false
+    t.decimal  "volume",        precision: 20, scale: 2,  null: false
+    t.decimal  "trade_id",      precision: 20,            null: false
+    t.datetime "traded_at",                               null: false
+    t.datetime "created_at",                              null: false
+    t.datetime "updated_at",                              null: false
   end
 
-  add_index "bitcoin_quotes", ["ask"], name: "index_bitcoin_quotes_on_ask", using: :btree
-  add_index "bitcoin_quotes", ["bid"], name: "index_bitcoin_quotes_on_bid", using: :btree
-  add_index "bitcoin_quotes", ["created_at"], name: "index_bitcoin_quotes_on_created_at", using: :btree
-  add_index "bitcoin_quotes", ["spot"], name: "index_bitcoin_quotes_on_spot", using: :btree
+  add_index "quotes", ["currency_pair"], name: "index_quotes_on_currency_pair", using: :btree
+  add_index "quotes", ["trade_id"], name: "index_quotes_on_trade_id", using: :btree
+  add_index "quotes", ["traded_at"], name: "index_quotes_on_traded_at", using: :btree
 
   create_table "strategies", force: :cascade do |t|
     t.string   "name"
@@ -38,6 +41,9 @@ ActiveRecord::Schema.define(version: 20170821134120) do
     t.integer  "lookback_hours"
     t.datetime "created_at",               null: false
     t.datetime "updated_at",               null: false
+    t.string   "currency_pair"
   end
+
+  add_index "strategies", ["currency_pair"], name: "index_strategies_on_currency_pair", using: :btree
 
 end
