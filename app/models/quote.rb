@@ -8,29 +8,34 @@ class Quote < ActiveRecord::Base
   validates :trade_id, presence: true, uniqueness: true
   validates :traded_at, presence: true
 
-  def self.check_strategies(quote=recent_quote)
-    raise "No recent quote for comparison!" unless quote.present?
-    Strategy.all.each do |strategy|
-      next if strategy.last_alert_sent_at.present? && strategy.last_alert_sent_at > 30.minutes.ago
-      message = strategy.check_for_message(quote)
-      if message.present?
-        Quote.send_slack_notification(message)
-        strategy.update_column(:last_alert_sent_at, Time.zone.now)
-      end
+  def self.get_previous_quotes(quote, lookback_hours)
+    Quote.where(currency_pair: quote.currency_pair).where("traded_at > ?", quote.created_at - lookback_hours.hours).where("traded_at < ?", quote.created_at).order("traded_at desc")
+  end
+
+  def self.recent_quotes(lookback_minutes=2)
+    Quote.where("traded_at > ?", lookback_minutes.minutes.ago)
+  end
+
+  def self.check_recent_quotes_for_passing_strategies
+    Quote.recent_quotes.each do |quote|
+      quote.check_and_update_passing_strategy_ids(Strategy.all)
+      quote.reload.process_strategies
     end
   end
 
-  def self.recent_quote(lookback_minutes=2)
-    Quote.where("traded_at > ?", lookback_minutes.minutes.ago).try(:first)
+  def process_strategies
+    return unless self.passing_strategy_ids.any?
+    Strategy.where(id: self.passing_strategy_ids).each do |strategy|
+      strategy.send_slack_message(self)
+    end
   end
 
-  def self.send_slack_notification(message)
-    client = Slack::Web::Client.new
-    channel = Rails.env.production? ? "#bitcoin-alerts" : "#transactions-dev"
-    username = "Bitcoinbot"
-    icon_url = "https://image.freepik.com/free-icon/bitcoin-btc_318-41696.jpg"
-    message = "<!channel>   " + message
-    client.chat_postMessage(channel: channel, text: message.html_safe, as_user: false, username: username, icon_url: icon_url)
+  def check_and_update_passing_strategy_ids(strategies)
+    strategy_ids_that_pass = []
+    strategies.each do |strategy|
+      strategy_ids_that_pass << strategy.id if strategy.quote_is_passing?(self)
+    end
+    self.update_attribute(:passing_strategy_ids, strategy_ids_that_pass) if strategy_ids_that_pass.any?
   end
 
   def pretty_cst_time

@@ -1,8 +1,30 @@
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
+  # Settings specified here will take precedence over those in config/application.rb.
+  config.middleware.use ExceptionNotification::Rack,
+    :email => {
+      :email_prefix => "[ERROR] ",
+      :sender_address => %{"STOCK ALERT" <pj.stock.alerts@gmail.com>},
+      :exception_recipients => %w{petejabbour1@gmail.com}
+    }
+
   # Code is not reloaded between requests.
   config.cache_classes = true
+
+  # Gmail mailer configuration
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+    :address              => 'smtp.gmail.com',
+    :port                 => 587,
+    :domain               => 'stockalerts.herokuapp.com',
+    :user_name            => 'pj.stock.alerts@gmail.com',
+    :password             => 'wp7u8Zyz,hnZk(Z',
+    :authentication       => 'plain',
+    :enable_starttls_auto => true  }
+
+  # Set the default host option for mailer
+  config.action_mailer.default_url_options = { :host => 'stockalerts.herokuapp.com' }
 
   # Eager load code on boot. This eager loads most of Rails and
   # your application in memory, allowing both threaded web servers

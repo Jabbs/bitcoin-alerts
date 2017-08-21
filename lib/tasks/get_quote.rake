@@ -18,6 +18,6 @@ namespace :bitcoin do
         trade_id: last_trade["trade_id"]
       )
     end
-    Quote.check_strategies
+    Quote.check_recent_quotes_for_passing_strategies
   end
 end

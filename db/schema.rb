@@ -11,22 +11,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170821183503) do
+ActiveRecord::Schema.define(version: 20170821202525) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "quotes", force: :cascade do |t|
-    t.string   "currency_pair",                           null: false
-    t.decimal  "bid",           precision: 15, scale: 2,  null: false
-    t.decimal  "ask",           precision: 15, scale: 2,  null: false
-    t.decimal  "price",         precision: 15, scale: 2,  null: false
-    t.decimal  "size",          precision: 20, scale: 10, null: false
-    t.decimal  "volume",        precision: 20, scale: 2,  null: false
-    t.decimal  "trade_id",      precision: 20,            null: false
-    t.datetime "traded_at",                               null: false
-    t.datetime "created_at",                              null: false
-    t.datetime "updated_at",                              null: false
+    t.string   "currency_pair",                                               null: false
+    t.decimal  "bid",                  precision: 15, scale: 2,               null: false
+    t.decimal  "ask",                  precision: 15, scale: 2,               null: false
+    t.decimal  "price",                precision: 15, scale: 2,               null: false
+    t.decimal  "size",                 precision: 20, scale: 10,              null: false
+    t.decimal  "volume",               precision: 20, scale: 2,               null: false
+    t.decimal  "trade_id",             precision: 20,                         null: false
+    t.datetime "traded_at",                                                   null: false
+    t.datetime "created_at",                                                  null: false
+    t.datetime "updated_at",                                                  null: false
+    t.integer  "passing_strategy_ids",                           default: [],              array: true
   end
 
   add_index "quotes", ["currency_pair"], name: "index_quotes_on_currency_pair", using: :btree

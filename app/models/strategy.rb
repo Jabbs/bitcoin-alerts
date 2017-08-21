@@ -1,16 +1,52 @@
 class Strategy < ActiveRecord::Base
 
-  def check_for_message(quote)
-    current_amt = quote.ask
-    Quote.where("traded_at > ?", quote.created_at - self.lookback_hours.hours).where("traded_at < ?", quote.created_at).order("traded_at desc").each do |q|
-      previous_amt = q.ask
-      percent_change = Numbers.percent_change(current_amt, previous_amt)
-      strategy_percent_change = self.percent_change_direction == "decrease" ? self.percent_change * (-1) : self.percent_change
-      if percent_change <= strategy_percent_change
-        return "#{self.slack_name}\n   *#{percent_change}%*   ($#{previous_amt.round(2)} -> $#{current_amt.round(2)})   |   #{q.pretty_cst_time} -> #{self.pretty_cst_time}"
+  def self.send_slack_notification(message)
+    client = Slack::Web::Client.new
+    channel = Rails.env.production? ? "#bitcoin-alerts" : "#transactions-dev"
+    username = "Bitcoinbot"
+    icon_url = "https://image.freepik.com/free-icon/bitcoin-btc_318-41696.jpg"
+    message = "<!channel>   " + message
+    client.chat_postMessage(channel: channel, text: message.html_safe, as_user: false, username: username, icon_url: icon_url)
+  end
+
+  def send_slack_message(quote)
+    return if self.last_alert_sent_at.present? && self.last_alert_sent_at > 30.minutes.ago
+    Strategy.send_slack_notification(self.slack_message(quote))
+    self.update_column(:last_alert_sent_at, Time.zone.now)
+  end
+
+  def slack_message(quote)
+    comparison_quote = self.most_recent_passing_quote(quote)
+    "#{self.slack_name}\n   *#{Numbers.percent_change(quote.ask, comparison_quote.ask)}%*   ($#{comparison_quote.ask.round(2)} -> $#{quote.ask.round(2)})   |   #{comparison_quote.pretty_cst_time} -> #{quote.pretty_cst_time}"
+  end
+
+  def most_recent_passing_quote(quote)
+    Quote.get_previous_quotes(quote, self.lookback_hours).each do |q|
+      if self.percent_change_passes_threshold?(Numbers.percent_change(quote.ask, q.ask))
+        return q
       end
     end
-    ""
+    nil
+  end
+
+  def quote_is_passing?(quote)
+    self.most_recent_passing_quote(quote).present? ? true : false
+  end
+
+  def buy?
+    self.percent_change_direction == "decrease"
+  end
+
+  def sell?
+    self.percent_change_direction == "increase"
+  end
+
+  def percent_change_threshold
+    self.buy? ? self.percent_change * (-1) : self.percent_change
+  end
+
+  def percent_change_passes_threshold?(percent_change)
+    (self.buy? && percent_change <= self.percent_change_threshold) || (self.sell? && percent_change >= self.percent_change_threshold)
   end
 
   def slack_name
