@@ -9,15 +9,15 @@ class Quote < ActiveRecord::Base
   validates :traded_at, presence: true
 
   def self.get_previous_quotes(quote, lookback_hours)
-    Quote.where(currency_pair: quote.currency_pair).where("traded_at > ?", quote.created_at - lookback_hours.hours).where("traded_at < ?", quote.created_at).order("traded_at desc")
+    Quote.where(currency_pair: quote.currency_pair).where("traded_at > ?", quote.traded_at - lookback_hours.hours).where("traded_at < ?", quote.traded_at).order("traded_at desc")
   end
 
   def self.recent_quotes(lookback_minutes=2)
     Quote.where("traded_at > ?", lookback_minutes.minutes.ago)
   end
 
-  def self.check_recent_quotes_for_passing_strategies
-    Quote.recent_quotes.each do |quote|
+  def self.check_for_passing_strategies(quotes)
+    quotes.each do |quote|
       quote.check_and_update_passing_strategy_ids(Strategy.all)
       quote.reload.process_strategies
     end
