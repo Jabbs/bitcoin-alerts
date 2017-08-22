@@ -1,5 +1,14 @@
 class Strategy < ActiveRecord::Base
 
+  def self.get_return(starting_amount, days, percent_per_day)
+    r = starting_amount.to_f
+    p = percent_per_day.to_f/100.to_f
+    days.times do
+      r = r + (r*p)
+    end
+    r
+  end
+
   def self.send_slack_notification(message)
     client = Slack::Web::Client.new
     channel = Rails.env.production? ? "#bitcoin-alerts" : "#transactions-dev"
