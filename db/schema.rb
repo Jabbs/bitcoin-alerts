@@ -11,10 +11,31 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170821202525) do
+ActiveRecord::Schema.define(version: 20170822202705) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "orders", force: :cascade do |t|
+    t.string   "client_id",      null: false
+    t.string   "price"
+    t.string   "size"
+    t.string   "currency_pair"
+    t.string   "side"
+    t.string   "stp"
+    t.string   "order_type"
+    t.string   "time_in_force"
+    t.boolean  "post_only"
+    t.string   "fill_fees"
+    t.string   "filled_size"
+    t.string   "executed_value"
+    t.string   "status"
+    t.boolean  "settled"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+  end
+
+  add_index "orders", ["client_id"], name: "index_orders_on_client_id", unique: true, using: :btree
 
   create_table "quotes", force: :cascade do |t|
     t.string   "currency_pair",                                               null: false
@@ -34,17 +55,31 @@ ActiveRecord::Schema.define(version: 20170821202525) do
   add_index "quotes", ["trade_id"], name: "index_quotes_on_trade_id", using: :btree
   add_index "quotes", ["traded_at"], name: "index_quotes_on_traded_at", using: :btree
 
+  create_table "schemes", force: :cascade do |t|
+    t.datetime "starting_at"
+    t.datetime "ending_at"
+    t.string   "state",        default: "inactive"
+    t.datetime "created_at",                        null: false
+    t.datetime "updated_at",                        null: false
+    t.integer  "strategy_ids", default: [],                      array: true
+  end
+
+  add_index "schemes", ["state"], name: "index_schemes_on_state", using: :btree
+
   create_table "strategies", force: :cascade do |t|
     t.string   "name"
     t.integer  "percent_change"
-    t.string   "percent_change_direction"
     t.datetime "last_alert_sent_at"
     t.integer  "lookback_hours"
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
+    t.datetime "created_at",                       null: false
+    t.datetime "updated_at",                       null: false
     t.string   "currency_pair"
+    t.string   "category"
+    t.string   "percent_change_confinment"
+    t.integer  "trade_percent_of_account_balance"
   end
 
+  add_index "strategies", ["category"], name: "index_strategies_on_category", using: :btree
   add_index "strategies", ["currency_pair"], name: "index_strategies_on_currency_pair", using: :btree
 
 end

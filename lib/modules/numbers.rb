@@ -8,4 +8,8 @@ module Numbers
     n = n * (-1) if diff < 0
     n.round(round)
   end
+
+  def self.percent_from_total(total, percent)
+    (percent.to_f/100.to_f)*total.to_f
+  end
 end

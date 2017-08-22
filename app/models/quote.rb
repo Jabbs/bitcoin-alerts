@@ -8,21 +8,12 @@ class Quote < ActiveRecord::Base
   validates :trade_id, presence: true, uniqueness: true
   validates :traded_at, presence: true
 
-  ALERTABLE_CURRENCY_PAIRS = ["BTC-USD"]
-
   def self.get_previous_quotes(quote, lookback_hours)
     Quote.where(currency_pair: quote.currency_pair).where("traded_at > ?", quote.traded_at - lookback_hours.hours).where("traded_at < ?", quote.traded_at).order("traded_at desc")
   end
 
   def self.recent_quotes(lookback_minutes=2)
     Quote.where("traded_at > ?", lookback_minutes.minutes.ago)
-  end
-
-  def self.update_passing_strategies_and_process_alerts(quotes)
-    quotes.each do |quote|
-      quote.check_and_update_passing_strategy_ids(Strategy.all)
-      quote.process_slack_alerts if ALERTABLE_CURRENCY_PAIRS.include?(quote.currency_pair)
-    end
   end
 
   def process_slack_alerts
@@ -40,7 +31,11 @@ class Quote < ActiveRecord::Base
     self.update_attribute(:passing_strategy_ids, strategy_ids_that_pass) if strategy_ids_that_pass.any?
   end
 
-  def pretty_cst_time
+  def traded_at_with_pretty_cst_time
     self.traded_at.in_time_zone("Central Time (US & Canada)").strftime("%m/%d/%y:%-l:%M%P")
+  end
+
+  def passing_strategies
+    Strategy.where(id: self.passing_strategy_ids)
   end
 end

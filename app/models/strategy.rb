@@ -9,6 +9,17 @@ class Strategy < ActiveRecord::Base
     r
   end
 
+  def self.choose_highest_priority(strategies)
+    return if strategies.where(category: "hold").any?
+    if strategies.where(category: "sell").any?
+      strategies.where(category: "sell").first
+    elsif strategies.where(category: "buy").any?
+      strategies.where(category: "buy").first
+    else
+      nil
+    end
+  end
+
   def self.send_slack_notification(message)
     client = Slack::Web::Client.new
     channel = Rails.env.production? ? "#bitcoin-alerts" : "#transactions-dev"
@@ -26,7 +37,7 @@ class Strategy < ActiveRecord::Base
 
   def slack_message(quote)
     comparison_quote = self.most_recent_passing_quote(quote)
-    "#{self.slack_name}\n   *#{Numbers.percent_change(quote.ask, comparison_quote.ask)}%*   ($#{comparison_quote.ask.round(2)} -> $#{quote.ask.round(2)})   |   #{comparison_quote.pretty_cst_time} -> #{quote.pretty_cst_time}"
+    "#{self.slack_name}\n   *#{Numbers.percent_change(quote.ask, comparison_quote.ask)}%*   ($#{comparison_quote.ask.round(2)} -> $#{quote.ask.round(2)})   |   #{comparison_quote.traded_at_with_pretty_cst_time} -> #{quote.traded_at_with_pretty_cst_time}"
   end
 
   def most_recent_passing_quote(quote)
@@ -42,20 +53,13 @@ class Strategy < ActiveRecord::Base
     self.most_recent_passing_quote(quote).present? ? true : false
   end
 
-  def buy?
-    self.percent_change_direction == "decrease"
-  end
-
-  def sell?
-    self.percent_change_direction == "increase"
-  end
-
   def percent_change_threshold
-    self.buy? ? self.percent_change * (-1) : self.percent_change
+    self.percent_change_confinment == "floor" ? self.percent_change * (-1) : self.percent_change
   end
 
   def percent_change_passes_threshold?(percent_change)
-    (self.buy? && percent_change <= self.percent_change_threshold) || (self.sell? && percent_change >= self.percent_change_threshold)
+    (self.percent_change_confinment == "floor" && percent_change <= self.percent_change_threshold) ||
+      (self.percent_change_confinment == "ceiling" && percent_change >= self.percent_change_threshold)
   end
 
   def slack_name

@@ -18,6 +18,6 @@ namespace :bitcoin do
         trade_id: last_trade["trade_id"]
       )
     end
-    Quote.update_passing_strategies_and_process_alerts(Quote.recent_quotes)
+    Scheme.process(Quote.recent_quotes)
   end
 end
