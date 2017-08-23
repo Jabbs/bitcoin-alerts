@@ -49,6 +49,14 @@ class Strategy < ActiveRecord::Base
     nil
   end
 
+  def buy?
+    self.category == "buy"
+  end
+
+  def sell?
+    self.category == "sell"
+  end
+
   def quote_is_passing?(quote)
     self.most_recent_passing_quote(quote).present? ? true : false
   end

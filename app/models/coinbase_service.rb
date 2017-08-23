@@ -2,23 +2,26 @@ class CoinbaseService < ActiveRecord::Base
 
   def self.trade(strategy, quote)
     if strategy.buy?
-      response = buy_limit_order(strategy, quote)
+      response = buy_order(strategy, quote)
     elsif strategy.sell?
-      response = sell_limit_order(strategy, quote)
+      response = sell_order(strategy, quote)
     end
     handle_order_response(response, strategy, quote)
   end
 
-  def self.buy_limit_order(strategy, quote)
+  def self.buy_order(order_type="market", strategy, quote)
     client, account = get_client_and_account(strategy.currency_pair, "USD")
-    amt, price = get_amt_and_price(account, strategy, quote)
-    client.buy(amt, price)
+    amt, price = get_amt_and_price(order_type, account, strategy, quote)
+    params = { type: order_type }
+    client.buy(amt, price, params)
   end
 
-  def self.sell_limit_order(strategy, quote)
-    client, account = get_client_and_account(strategy.currency_pair, "BTC")
-    amt, price = get_amt_and_price(account, strategy, quote)
-    client.sell(amt, price)
+  def self.sell_order(order_type="market", strategy, quote)
+    currency = strategy.currency_pair.split("-").first
+    client, account = get_client_and_account(strategy.currency_pair, currency)
+    amt, price = get_amt_and_price(order_type, account, strategy, quote)
+    params = { type: order_type }
+    client.sell(amt, price, params)
   end
 
   def self.get_client_and_account(currency_pair, account_currency)
@@ -28,9 +31,10 @@ class CoinbaseService < ActiveRecord::Base
     [client, account]
   end
 
-  def self.get_amt_and_price(account, strategy, quote)
-    price = quote.price
+  def self.get_amt_and_price(order_type, account, strategy, quote)
+    price = strategy.buy? ? quote.ask : quote.bid
     amt = Numbers.percent_from_total(BigDecimal(account.balance), strategy.trade_percent_of_account_balance) / price
+    price = nil if order_type == "market"
     [amt.round(8), price]
   end
 
