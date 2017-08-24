@@ -42,7 +42,7 @@ class Strategy < ActiveRecord::Base
 
   def most_recent_passing_quote(quote)
     Quote.get_previous_quotes(quote, self.lookback_hours).each do |q|
-      if self.percent_change_passes_threshold?(Numbers.percent_change(quote.ask, q.ask))
+      if self.percent_change_passes_threshold?(Numbers.percent_change(quote.price, q.price))
         return q
       end
     end
@@ -58,6 +58,7 @@ class Strategy < ActiveRecord::Base
   end
 
   def quote_is_passing?(quote)
+    return false unless quote.currency_pair == self.currency_pair
     self.most_recent_passing_quote(quote).present? ? true : false
   end
 

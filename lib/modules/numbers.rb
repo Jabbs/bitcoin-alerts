@@ -9,6 +9,10 @@ module Numbers
     n.round(round)
   end
 
+  def self.average(ary)
+    ary.inject(:+).to_f / ary.size
+  end
+
   def self.percent_from_total(total, percent)
     (percent.to_f/100.to_f)*total.to_f
   end

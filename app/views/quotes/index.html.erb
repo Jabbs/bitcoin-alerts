@@ -1,0 +1,25 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-10">
+      <% currency = params[:currency].present? ? params[:currency] : "btc" %>
+      <%= link_to "Bitcoin", "/quotes?currency=btc", class: "#{'active' if currency == "btc"}" %> |
+      <%= link_to "Litecoin", "/quotes?currency=ltc", class: "#{'active' if currency == "ltc"}" %> |
+      <%= link_to "Ethereum", "/quotes?currency=eth", class: "#{'active' if currency == "eth"}" %>
+    </div>
+    <div class="col-md-2">
+      Volume
+    </div>
+  </div>
+  <% comparison_quote_prices = [] %>
+  <% comparison_average_price = nil %>
+  <% previous_volume = nil %>
+  <% @quotes.each_with_index do |quote, index| %>
+    <%= render "quotes/bar", q: quote, comparison_average_price: comparison_average_price, previous_volume: previous_volume %>
+    <% previous_volume = quote.volume %>
+    <% comparison_quote_prices << quote.price %>
+    <% if comparison_quote_prices.size == @comparison_quote_lookback_quote_count %>
+      <% comparison_average_price = Numbers.average(comparison_quote_prices) %>
+      <% comparison_quote = comparison_quote_prices.shift %>
+    <% end %>
+  <% end %>
+</div>

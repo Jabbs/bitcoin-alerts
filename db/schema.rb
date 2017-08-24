@@ -11,13 +11,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170822202705) do
+ActiveRecord::Schema.define(version: 20170824123657) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "orders", force: :cascade do |t|
-    t.string   "client_id",      null: false
+    t.string   "client_id",       null: false
     t.string   "price"
     t.string   "size"
     t.string   "currency_pair"
@@ -31,11 +31,23 @@ ActiveRecord::Schema.define(version: 20170822202705) do
     t.string   "executed_value"
     t.string   "status"
     t.boolean  "settled"
-    t.datetime "created_at",     null: false
-    t.datetime "updated_at",     null: false
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+    t.integer  "simulation_id"
+    t.integer  "scheme_id"
+    t.string   "done_at"
+    t.string   "done_reason"
+    t.string   "funds"
+    t.string   "specified_funds"
+    t.integer  "quote_id"
+    t.integer  "strategy_id"
   end
 
-  add_index "orders", ["client_id"], name: "index_orders_on_client_id", unique: true, using: :btree
+  add_index "orders", ["client_id"], name: "index_orders_on_client_id", using: :btree
+  add_index "orders", ["quote_id"], name: "index_orders_on_quote_id", using: :btree
+  add_index "orders", ["scheme_id"], name: "index_orders_on_scheme_id", using: :btree
+  add_index "orders", ["simulation_id"], name: "index_orders_on_simulation_id", using: :btree
+  add_index "orders", ["strategy_id"], name: "index_orders_on_strategy_id", using: :btree
 
   create_table "quotes", force: :cascade do |t|
     t.string   "currency_pair",                                               null: false
@@ -65,6 +77,25 @@ ActiveRecord::Schema.define(version: 20170822202705) do
   end
 
   add_index "schemes", ["state"], name: "index_schemes_on_state", using: :btree
+
+  create_table "simulations", force: :cascade do |t|
+    t.integer  "scheme_id"
+    t.integer  "starting_quote_id"
+    t.integer  "ending_quote_id"
+    t.datetime "completed_at"
+    t.datetime "created_at",                                             null: false
+    t.datetime "updated_at",                                             null: false
+    t.decimal  "usd_starting_account_balance", precision: 25, scale: 10
+    t.decimal  "usd_account_balance",          precision: 25, scale: 10
+    t.decimal  "btc_starting_account_balance", precision: 25, scale: 10
+    t.decimal  "btc_account_balance",          precision: 25, scale: 10
+    t.decimal  "eth_starting_account_balance", precision: 25, scale: 10
+    t.decimal  "eth_account_balance",          precision: 25, scale: 10
+    t.decimal  "ltc_starting_account_balance", precision: 25, scale: 10
+    t.decimal  "ltc_account_balance",          precision: 25, scale: 10
+  end
+
+  add_index "simulations", ["scheme_id"], name: "index_simulations_on_scheme_id", using: :btree
 
   create_table "strategies", force: :cascade do |t|
     t.string   "name"

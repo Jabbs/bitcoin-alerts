@@ -1,27 +1,24 @@
 class CoinbaseService < ActiveRecord::Base
 
-  def self.trade(strategy, quote)
-    if strategy.buy?
-      response = buy_order(strategy, quote)
-    elsif strategy.sell?
-      response = sell_order(strategy, quote)
+  def self.trade(scheme, strategy, quote, simulation=nil)
+    response = order(strategy, quote, "market", simulation)
+    handle_order_response(response, scheme, strategy, quote, simulation)
+  end
+
+  def self.order(strategy, quote, order_type="market", simulation=nil)
+    currency = strategy.buy? ? "USD" : strategy.currency_pair.split("-").first
+    if simulation.present?
+      balance_method = currency.downcase + "_account_balance"
+      account = DotHash.load({balance: simulation.send(balance_method)})
+      amt, price = get_amt_and_price(order_type, account, strategy, quote)
+      puts strategy.category.upcase + " - "+ "quote id: #{quote.id}, " + "quote bid: #{quote.bid.to_s}, " + "quote ask: #{quote.ask.to_s}, " + "amt: #{amt}, price: #{price}"
+      fake_api_respone(amt, order_type, strategy, quote, simulation)
+    else
+      client, account = get_client_and_account(strategy.currency_pair, currency)
+      amt, price = get_amt_and_price(order_type, account, strategy, quote)
+      params = { type: order_type }
+      client.send(strategy.category, amt, price, params)
     end
-    handle_order_response(response, strategy, quote)
-  end
-
-  def self.buy_order(order_type="market", strategy, quote)
-    client, account = get_client_and_account(strategy.currency_pair, "USD")
-    amt, price = get_amt_and_price(order_type, account, strategy, quote)
-    params = { type: order_type }
-    client.buy(amt, price, params)
-  end
-
-  def self.sell_order(order_type="market", strategy, quote)
-    currency = strategy.currency_pair.split("-").first
-    client, account = get_client_and_account(strategy.currency_pair, currency)
-    amt, price = get_amt_and_price(order_type, account, strategy, quote)
-    params = { type: order_type }
-    client.sell(amt, price, params)
   end
 
   def self.get_client_and_account(currency_pair, account_currency)
@@ -38,20 +35,24 @@ class CoinbaseService < ActiveRecord::Base
     [amt.round(8), price]
   end
 
-  def self.handle_order_response(response, strategy, quote)
+  def self.handle_order_response(response, scheme, strategy, quote, simulation=nil)
     if response[:id]
       attrs = convert_response_to_order_attrs(response)
+      simulation.present? ? attrs[:simulation_id] = simulation.id : attrs[:scheme_id] = scheme.id
+      attrs[:quote_id]    = quote.id
+      attrs[:strategy_id] = strategy.id
       order = Order.create!(attrs)
-      Logger.info "ORDER CREATED. Order: #{order.id}, Strategy: #{strategy.id}, Quote: #{quote.id}."
     else
-      Logger.info "ORDER NOT PROCESSED. Strategy: #{strategy.id}, Quote: #{quote.id}."
+      Rails.logger.info "ORDER NOT PROCESSED. Strategy: #{strategy.id}, Quote: #{quote.id}."
     end
   end
 
   def self.convert_response_to_order_attrs(response)
     h = {}
     response.each do |k,v|
-      if k == :product_id
+      if k == :id
+        h[:client_id] = v
+      elsif k == :product_id
         h[:currency_pair] = v
       elsif k == :created_at
         h[k] = v.to_datetime
@@ -77,5 +78,48 @@ class CoinbaseService < ActiveRecord::Base
       api_pass   = ENV["GDAX_API_PASSPHRASE"]
       @client ||= Coinbase::Exchange::Client.new(api_key, api_secret, api_pass, product_id: currency_pair)
     end
+  end
+
+  def self.fake_api_respone(amt, order_type, strategy, quote, simulation)
+    price = strategy.buy? ? quote.ask : quote.bid
+    value = amt*price
+    fill_fees = value * 0.0025
+    executed_value = value - fill_fees
+    h = {
+      "id": "simulation-" + SecureRandom.urlsafe_base64,
+      "size": amt.to_s,
+      "product_id": strategy.currency_pair,
+      "side": strategy.category,
+      "stp": "dc",
+      "done_reason": "filled",
+      "done_at": DateTime.now.to_s,
+      "type": order_type,
+      "time_in_force": "GTC",
+      "post_only": false,
+      "created_at": DateTime.now,
+      "fill_fees": fill_fees.to_s,
+      "filled_size": amt.to_s,
+      "executed_value": executed_value.to_s,
+      "status": "done",
+      "settled": true
+    }
+
+    simulation = simulation.reload
+    if strategy.buy?
+      increment_balance_method = strategy.currency_pair.split("-").first.downcase + "_account_balance"
+      new_increment_balance    = simulation.send(increment_balance_method) + amt
+      decrement_balance_method = :usd_account_balance
+      new_decrement_balance    = simulation.send(decrement_balance_method) + (value*(-1))
+    else
+      increment_balance_method = :usd_account_balance
+      new_increment_balance    = simulation.send(increment_balance_method) + executed_value
+      decrement_balance_method = strategy.currency_pair.split("-").first.downcase + "_account_balance"
+      new_decrement_balance    = simulation.send(decrement_balance_method) + (amt*(-1))
+    end
+    puts "#{increment_balance_method} balance: #{simulation.send(increment_balance_method)} -> #{new_increment_balance}"
+    puts "#{decrement_balance_method} balance: #{simulation.send(decrement_balance_method)} -> #{new_decrement_balance}"
+    puts "------------------------------------------------"
+    simulation.update_attributes(increment_balance_method => new_increment_balance, decrement_balance_method => new_decrement_balance)
+    DotHash.load(h)
   end
 end

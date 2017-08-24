@@ -1,0 +1,13 @@
+@import "bourbon";
+@import "bootstrap.min";
+@import "bootstrap-switch.min";
+@import "bootstrap-slider.min";
+
+.progress {
+  border-radius: 0;
+  margin:0px;
+}
+
+a.active {
+  font-weight: bold;  
+}
