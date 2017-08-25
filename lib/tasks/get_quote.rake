@@ -3,7 +3,7 @@ namespace :bitcoin do
   desc 'Get quote from Coinbase'
   task :get_quote => :environment do
     client = Coinbase::Exchange::Client.new("", "", "")
-    currency_pairs = ['BTC-USD', 'ETH-USD', 'LTC-USD']
+    currency_pairs = ['BTC-USD', 'ETH-USD', 'LTC-USD', 'LTC-BTC', 'ETH-BTC']
     currency_pairs.each do |currency_pair|
       last_trade = client.last_trade(product_id: currency_pair)
       next if Quote.find_by_trade_id(last_trade["trade_id"]).present?
