@@ -22,7 +22,7 @@ class Simulation < ActiveRecord::Base
     simulation = find_incomplete_or_create(scheme, starting_quote_id, ending_quote_id, usd_starting_account_balance, btc_starting_account_balance, eth_starting_account_balance, ltc_starting_account_balance)
     return unless simulation.present?
     Quote.where(id: [starting_quote_id..ending_quote_id]).order(:traded_at).each do |quote|
-      quote.check_and_update_passing_strategy_ids(scheme.strategies)
+      quote.assign_passing_strategies(scheme.strategies)
       scheme.make_trades(quote, simulation)
     end
     end_simulation_time = DateTime.now

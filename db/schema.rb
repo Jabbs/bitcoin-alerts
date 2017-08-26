@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170825234622) do
+ActiveRecord::Schema.define(version: 20170826120404) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -82,6 +82,19 @@ ActiveRecord::Schema.define(version: 20170825234622) do
   add_index "quotes", ["trade_id"], name: "index_quotes_on_trade_id", using: :btree
   add_index "quotes", ["traded_at"], name: "index_quotes_on_traded_at", using: :btree
 
+  create_table "rules", force: :cascade do |t|
+    t.integer  "strategy_id"
+    t.decimal  "percent_increase", precision: 12, scale: 4
+    t.decimal  "percent_decrease", precision: 12, scale: 4
+    t.integer  "lookback_minutes"
+    t.string   "comparison_logic"
+    t.string   "operator"
+    t.datetime "created_at",                                null: false
+    t.datetime "updated_at",                                null: false
+  end
+
+  add_index "rules", ["strategy_id"], name: "index_rules_on_strategy_id", using: :btree
+
   create_table "schemes", force: :cascade do |t|
     t.datetime "starting_at"
     t.datetime "ending_at"
@@ -114,14 +127,11 @@ ActiveRecord::Schema.define(version: 20170825234622) do
 
   create_table "strategies", force: :cascade do |t|
     t.string   "name"
-    t.integer  "percent_change"
     t.datetime "last_alert_sent_at"
-    t.integer  "lookback_hours"
     t.datetime "created_at",                       null: false
     t.datetime "updated_at",                       null: false
     t.string   "currency_pair"
     t.string   "category"
-    t.string   "percent_change_confinment"
     t.integer  "trade_percent_of_account_balance"
   end
 
