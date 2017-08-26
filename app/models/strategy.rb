@@ -1,10 +1,11 @@
 class Strategy < ActiveRecord::Base
 
-  def self.get_return(starting_amount, days, percent_per_day)
+  def self.get_return(starting_amount, days, percent, lot_size, lot_wins_per_day)
     r = starting_amount.to_f
-    p = percent_per_day.to_f/100.to_f
     days.times do
-      r = r + (r*p)
+      l = r.to_f/lot_size.to_f
+      a = (l * (1.to_f + percent.to_f/100.to_f)) - l
+      r = r + (a*lot_wins_per_day)
     end
     r
   end

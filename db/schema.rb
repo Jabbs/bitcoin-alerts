@@ -11,10 +11,25 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170824123657) do
+ActiveRecord::Schema.define(version: 20170825234622) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "coins", force: :cascade do |t|
+    t.decimal  "acquired_price", precision: 20, scale: 10
+    t.string   "currency"
+    t.integer  "wallet_id"
+    t.integer  "order_id"
+    t.decimal  "sold_price",     precision: 20, scale: 10
+    t.datetime "sold_at"
+    t.datetime "created_at",                               null: false
+    t.datetime "updated_at",                               null: false
+  end
+
+  add_index "coins", ["created_at"], name: "index_coins_on_created_at", using: :btree
+  add_index "coins", ["sold_at"], name: "index_coins_on_sold_at", using: :btree
+  add_index "coins", ["wallet_id"], name: "index_coins_on_wallet_id", using: :btree
 
   create_table "orders", force: :cascade do |t|
     t.string   "client_id",       null: false
@@ -112,5 +127,11 @@ ActiveRecord::Schema.define(version: 20170824123657) do
 
   add_index "strategies", ["category"], name: "index_strategies_on_category", using: :btree
   add_index "strategies", ["currency_pair"], name: "index_strategies_on_currency_pair", using: :btree
+
+  create_table "wallets", force: :cascade do |t|
+    t.string   "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
 end

@@ -12,9 +12,11 @@
   </div>
   <% comparison_quote_prices = [] %>
   <% comparison_average_price = nil %>
+  <% previous_price = nil %>
   <% previous_volume = nil %>
   <% @quotes.each_with_index do |quote, index| %>
-    <%= render "quotes/bar", q: quote, comparison_average_price: comparison_average_price, previous_volume: previous_volume %>
+    <%= render "quotes/bar", q: quote, comparison_average_price: comparison_average_price, previous_volume: previous_volume, previous_price: previous_price %>
+    <% previous_price = quote.price %>
     <% previous_volume = quote.volume %>
     <% comparison_quote_prices << quote.price %>
     <% if comparison_quote_prices.size == @comparison_quote_lookback_quote_count %>

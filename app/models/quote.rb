@@ -16,6 +16,21 @@ class Quote < ActiveRecord::Base
     Quote.where("traded_at > ?", lookback_minutes.minutes.ago)
   end
 
+  def self.most_recent_currency_prices(quote_id)
+    h = {}
+    h[:btc] = nil
+    h[:eth] = nil
+    h[:ltc] = nil
+    10.times do
+      q = Quote.find_by_id(quote_id)
+      currency_sym = q.currency_pair.split("-")[0].downcase.to_sym
+      h[currency_sym] = q.price
+      return h if h[:btc].present? && h[:eth].present? && h[:ltc].present?
+      quote_id -= 1
+    end
+    nil
+  end
+
   def process_slack_alerts
     return unless self.passing_strategy_ids.any?
     Strategy.where(id: self.passing_strategy_ids).each do |strategy|

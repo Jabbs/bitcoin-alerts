@@ -11,8 +11,8 @@ class CoinbaseService < ActiveRecord::Base
       balance_method = currency.downcase + "_account_balance"
       account = DotHash.load({balance: simulation.send(balance_method)})
       amt, price = get_amt_and_price(order_type, account, strategy, quote)
-      puts strategy.category.upcase + " - "+ "quote id: #{quote.id}, " + "quote bid: #{quote.bid.to_s}, " + "quote ask: #{quote.ask.to_s}, " + "amt: #{amt}, price: #{price}"
-      fake_api_respone(amt, order_type, strategy, quote, simulation)
+      puts strategy.category.upcase + " " + quote.currency_pair + " - "+ "quote id: #{quote.id}, " + "quote bid: #{quote.bid.to_s}, " + "quote ask: #{quote.ask.to_s}, " + "amt: #{amt}, price: #{price}"
+      simulated_api_respone(amt, order_type, strategy, quote, simulation)
     else
       client, account = get_client_and_account(strategy.currency_pair, currency)
       amt, price = get_amt_and_price(order_type, account, strategy, quote)
@@ -80,11 +80,12 @@ class CoinbaseService < ActiveRecord::Base
     end
   end
 
-  def self.fake_api_respone(amt, order_type, strategy, quote, simulation)
+  def self.simulated_api_respone(amt, order_type, strategy, quote, simulation=nil)
     price = strategy.buy? ? quote.ask : quote.bid
     value = amt*price
     fill_fees = value * 0.0025
     executed_value = value - fill_fees
+    filled_size = amt*0.9975
     h = {
       "id": "simulation-" + SecureRandom.urlsafe_base64,
       "size": amt.to_s,
@@ -98,28 +99,31 @@ class CoinbaseService < ActiveRecord::Base
       "post_only": false,
       "created_at": DateTime.now,
       "fill_fees": fill_fees.to_s,
-      "filled_size": amt.to_s,
+      "filled_size": filled_size.to_s,
       "executed_value": executed_value.to_s,
       "status": "done",
       "settled": true
     }
 
-    simulation = simulation.reload
-    if strategy.buy?
-      increment_balance_method = strategy.currency_pair.split("-").first.downcase + "_account_balance"
-      new_increment_balance    = simulation.send(increment_balance_method) + amt
-      decrement_balance_method = :usd_account_balance
-      new_decrement_balance    = simulation.send(decrement_balance_method) + (value*(-1))
-    else
-      increment_balance_method = :usd_account_balance
-      new_increment_balance    = simulation.send(increment_balance_method) + executed_value
-      decrement_balance_method = strategy.currency_pair.split("-").first.downcase + "_account_balance"
-      new_decrement_balance    = simulation.send(decrement_balance_method) + (amt*(-1))
+    if simulation.present?
+      simulation = simulation.reload
+      if strategy.buy?
+        increment_balance_method = strategy.currency_pair.split("-").first.downcase + "_account_balance"
+        new_increment_balance    = simulation.send(increment_balance_method) + filled_size
+        decrement_balance_method = :usd_account_balance
+        new_decrement_balance    = simulation.send(decrement_balance_method) + (value*(-1))
+      elsif strategy.sell?
+        increment_balance_method = :usd_account_balance
+        new_increment_balance    = simulation.send(increment_balance_method) + executed_value
+        decrement_balance_method = strategy.currency_pair.split("-").first.downcase + "_account_balance"
+        new_decrement_balance    = simulation.send(decrement_balance_method) + (amt*(-1))
+      end
+      puts "#{increment_balance_method} balance: #{simulation.send(increment_balance_method)} -> #{new_increment_balance}"
+      puts "#{decrement_balance_method} balance: #{simulation.send(decrement_balance_method)} -> #{new_decrement_balance}"
+      puts "------------------------------------------------"
+      simulation.update_attributes(increment_balance_method => new_increment_balance, decrement_balance_method => new_decrement_balance)
     end
-    puts "#{increment_balance_method} balance: #{simulation.send(increment_balance_method)} -> #{new_increment_balance}"
-    puts "#{decrement_balance_method} balance: #{simulation.send(decrement_balance_method)} -> #{new_decrement_balance}"
-    puts "------------------------------------------------"
-    simulation.update_attributes(increment_balance_method => new_increment_balance, decrement_balance_method => new_decrement_balance)
+
     DotHash.load(h)
   end
 end
