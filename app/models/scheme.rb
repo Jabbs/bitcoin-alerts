@@ -4,13 +4,17 @@ class Scheme < ActiveRecord::Base
 
   def self.process(quotes)
     logger.info "STARTED PROCESSING SCHEME #{self.id} FOR #{quotes.pluck(:id)}. #{DateTime.now.in_time_zone("Central Time (US & Canada)").strftime("%m/%d/%y:%-l:%M%P")}"
+    scheme = Scheme.where(state: "active").first
+    return unless scheme.present?
     quotes.each do |quote|
-      quote.assign_passing_strategies(Strategy.all)
-      scheme = Scheme.where(state: "active").first
-      next unless scheme.present?
+      quote.assign_passing_strategies(scheme.strategies)
       scheme.make_trades(quote)
     end
     logger.info "STOPPED PROCESSING SCHEME #{self.id} FOR #{quotes.pluck(:id)}. #{DateTime.now.in_time_zone("Central Time (US & Canada)").strftime("%m/%d/%y:%-l:%M%P")}"
+  end
+
+  def self.with_strategy(strategy_id)
+    Scheme.where("strategy_ids && '{#{strategy_id}}'::int[]")
   end
 
   def make_trades(quote, simulation=nil)

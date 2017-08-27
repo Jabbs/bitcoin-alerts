@@ -6,4 +6,13 @@ class Wallet < ActiveRecord::Base
   def self.for_trading
     Wallet.find_by_name("trading")
   end
+
+  def self.pretty_breakdown
+    text = ""
+    ["btc", "ltc", "eth"].each do |currency|
+      coins = Wallet.for_trading.coins.send(currency)
+      text << "#{currency.upcase} coins "
+    end
+    text
+  end
 end

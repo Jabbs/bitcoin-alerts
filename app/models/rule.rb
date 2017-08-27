@@ -2,6 +2,7 @@ class Rule < ActiveRecord::Base
   belongs_to :strategy
 
   validates :strategy_id, presence: true
+  validates :operator, presence: true
   validates :comparison_logic, presence: true
 
   scope :with_and_operator, -> { where(operator: "and") }
@@ -10,13 +11,29 @@ class Rule < ActiveRecord::Base
   COMPARISON_LOGICS = [
     "most_recent_quote",
     "quote_running_average",
-    "wallet_empty",
-    "wallet_has_coins",
-    "wallet_has_two_coins",
     "last_coin_in_wallet",
     "first_coin_in_wallet",
-    "no_recent_quote_with_same_strategy"
+    "wallet_empty",
+    "wallet_has_coins",
+    "wallet_has_one_coin",
+    "wallet_has_one_or_less_coins",
+    "wallet_has_two_coins",
+    "no_recent_quote_with_same_strategy",
+    "wallet_not_full"
   ]
+
+  def print_description
+    text = " - "
+    if self.comparison_logic == "most_recent_quote" || self.comparison_logic == "quote_running_average"
+      text += self.percent_increase.present? ? "ceiling threshold: %" + self.percent_increase.to_s : "floor threshold: %" + self.percent_decrease.to_s
+      text += ". Lookback #{(lookback_minutes.to_f/60.to_f).round(2)} hours"
+    elsif self.comparison_logic == "first_coin_in_wallet" || self.comparison_logic == "last_coin_in_wallet"
+      text += self.percent_increase.present? ? "ceiling threshold: %" + self.percent_increase.to_s : "floor threshold: %" + self.percent_decrease.to_s
+    else
+      text = ""
+    end
+    puts "##{self.id} | #{self.operator.upcase} | #{self.comparison_logic}" + text
+  end
 
   def coins
     Wallet.for_trading.coins.send(self.strategy.currency.downcase)
@@ -27,12 +44,24 @@ class Rule < ActiveRecord::Base
     self.send(check_method, quote)
   end
 
+  def wallet_not_full_passes_comparison_logic?(quote)
+    self.strategy.wallet_not_full?
+  end
+
   def wallet_empty_passes_comparison_logic?(quote)
     self.coins.empty?
   end
 
   def wallet_has_coins_passes_comparison_logic?(quote)
     self.coins.any?
+  end
+
+  def wallet_has_one_or_less_coins_passes_comparison_logic?(quote)
+    self.coins.count <= 1
+  end
+
+  def wallet_has_one_coin_passes_comparison_logic?(quote)
+    self.coins.count == 1
   end
 
   def wallet_has_two_coins_passes_comparison_logic?(quote)
@@ -75,8 +104,9 @@ class Rule < ActiveRecord::Base
     if self.percent_increase.present?
       percent_change >= self.percent_increase
     else
-      percent_change = percent_change * (-1) unless percent_change.negative?
-      percent_change <= self.percent_decrease
+      percent_decrease = self.percent_decrease
+      percent_decrease = percent_decrease * (-1) unless percent_decrease.negative?
+      percent_change <= percent_decrease
     end
   end
 end

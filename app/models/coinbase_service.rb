@@ -9,9 +9,13 @@ class CoinbaseService < ActiveRecord::Base
     currency = strategy.buy? ? "USD" : strategy.currency_pair.split("-").first
     if simulation.present?
       balance_method = currency.downcase + "_account_balance"
-      account = DotHash.load({balance: simulation.send(balance_method)})
+      account = DotHash.load({balance: simulation.send(balance_method).to_s})
       amt, price = get_amt_and_price(order_type, account, strategy, quote)
-      puts strategy.category.upcase + " " + quote.currency_pair + " - "+ "quote id: #{quote.id}, " + "quote bid: #{quote.bid.to_s}, " + "quote ask: #{quote.ask.to_s}, " + "amt: #{amt}, price: #{price}"
+      # ["btc", "ltc", "eth"].each do |currency|
+      #   coins = Wallet.for_trading.coins.send(currency)
+      #   puts "#{coins.count} #{currency.upcase} coins"
+      # end
+      # puts strategy.category.upcase + " " + quote.currency_pair + " - "+ "quote id: #{quote.id}, " + "quote bid: #{quote.bid.to_s}, " + "quote ask: #{quote.ask.to_s}, " + "amt: #{amt}, price: #{price}"
       simulated_api_respone(amt, order_type, strategy, quote, simulation)
     else
       client, account = get_client_and_account(strategy.currency_pair, currency)
@@ -30,7 +34,11 @@ class CoinbaseService < ActiveRecord::Base
 
   def self.get_amt_and_price(order_type, account, strategy, quote)
     price = strategy.buy? ? quote.ask : quote.bid
-    amt = Numbers.percent_from_total(BigDecimal(account.balance), strategy.trade_percent_of_account_balance) / price
+    if strategy.sell?
+      amt = Numbers.percent_from_total(account.balance.to_f, strategy.trade_percent_of_account_balance)
+    elsif strategy.buy?
+      amt = Numbers.percent_from_total(account.balance.to_f, strategy.trade_percent_of_account_balance) / price
+    end
     price = nil if order_type == "market"
     [amt.round(8), price]
   end
@@ -108,19 +116,19 @@ class CoinbaseService < ActiveRecord::Base
     if simulation.present?
       simulation = simulation.reload
       if strategy.buy?
-        increment_balance_method = strategy.currency_pair.split("-").first.downcase + "_account_balance"
+        increment_balance_method = strategy.currency.downcase + "_account_balance"
         new_increment_balance    = simulation.send(increment_balance_method) + filled_size
         decrement_balance_method = :usd_account_balance
         new_decrement_balance    = simulation.send(decrement_balance_method) + (value*(-1))
       elsif strategy.sell?
         increment_balance_method = :usd_account_balance
         new_increment_balance    = simulation.send(increment_balance_method) + executed_value
-        decrement_balance_method = strategy.currency_pair.split("-").first.downcase + "_account_balance"
+        decrement_balance_method = strategy.currency.downcase + "_account_balance"
         new_decrement_balance    = simulation.send(decrement_balance_method) + (amt*(-1))
       end
-      puts "#{increment_balance_method} balance: #{simulation.send(increment_balance_method)} -> #{new_increment_balance}"
-      puts "#{decrement_balance_method} balance: #{simulation.send(decrement_balance_method)} -> #{new_decrement_balance}"
-      puts "------------------------------------------------"
+      # puts "#{increment_balance_method} balance: #{simulation.send(increment_balance_method)} -> #{new_increment_balance}"
+      # puts "#{decrement_balance_method} balance: #{simulation.send(decrement_balance_method)} -> #{new_decrement_balance}"
+      # puts "------------------------------------------------"
       simulation.update_attributes(increment_balance_method => new_increment_balance, decrement_balance_method => new_decrement_balance)
     end
 

@@ -1,0 +1,13 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-10">
+      <%= @simulation.print_results %>
+    </div>
+    <div class="col-md-2">
+      Volume
+    </div>
+  </div>
+  <% @quotes.each_with_index do |quote, index| %>
+    <%= render "simulations/bar", q: quote %>
+  <% end %>
+</div>

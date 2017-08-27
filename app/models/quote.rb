@@ -31,6 +31,10 @@ class Quote < ActiveRecord::Base
     nil
   end
 
+  def running_price_average(lookback_minutes)
+    Numbers.average(Quote.where(currency_pair: self.currency_pair).where("traded_at > ?", self.traded_at - lookback_minutes.minutes).where("traded_at <= ?", self.traded_at).pluck(:price))
+  end
+
   def assign_passing_strategies(strategies)
     strategy_ids_that_pass = []
     strategies.where(currency_pair: self.currency_pair).each do |strategy|

@@ -15,23 +15,18 @@ class Order < ActiveRecord::Base
     self.side == "buy"
   end
 
-  def wallet
-    if self.simulation_id.present?
-      Wallet.find_by_name("simulation")
-    else
-      Wallet.find_by_name("trading")
-    end
+  def currency
+    self.currency_pair.split("-")[0]
   end
 
   private
 
   def add_coin_to_wallet
-    self.wallet.coins.create!(acquired_price: self.executed_value.to_f, currency: self.currency_pair.split("-")[0].downcase, order_id: self.id)
+    Wallet.for_trading.coins.create!(acquired_price: self.executed_value.to_f/self.size.to_f, currency: self.currency_pair.split("-")[0].downcase, order_id: self.id)
   end
 
   def remove_coins_from_wallet
-    currency = self.currency_pair.split("-")[0].downcase
-    coins = self.wallet.coins.send(currency)
+    coins = Wallet.for_trading.coins.send(self.currency.downcase)
     return unless coins.any?
     sold_price = self.executed_value.to_f / coins.count.to_f
     coins.update_all(sold_at: Time.zone.now, sold_price: sold_price)
