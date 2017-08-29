@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170826120404) do
+ActiveRecord::Schema.define(version: 20170827172234) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -30,6 +30,16 @@ ActiveRecord::Schema.define(version: 20170826120404) do
   add_index "coins", ["created_at"], name: "index_coins_on_created_at", using: :btree
   add_index "coins", ["sold_at"], name: "index_coins_on_sold_at", using: :btree
   add_index "coins", ["wallet_id"], name: "index_coins_on_wallet_id", using: :btree
+
+  create_table "daily_quotes_summaries", force: :cascade do |t|
+    t.text     "quote_data"
+    t.integer  "starting_quote_id"
+    t.integer  "ending_quote_id"
+    t.datetime "starting_quote_traded_at"
+    t.datetime "ending_quote_traded_at"
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+  end
 
   create_table "orders", force: :cascade do |t|
     t.string   "client_id",       null: false
@@ -137,6 +147,24 @@ ActiveRecord::Schema.define(version: 20170826120404) do
 
   add_index "strategies", ["category"], name: "index_strategies_on_category", using: :btree
   add_index "strategies", ["currency_pair"], name: "index_strategies_on_currency_pair", using: :btree
+
+  create_table "trades", force: :cascade do |t|
+    t.datetime "time"
+    t.integer  "trade_id",      null: false
+    t.decimal  "price"
+    t.decimal  "size"
+    t.string   "side"
+    t.string   "currency_pair"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+  end
+
+  add_index "trades", ["currency_pair"], name: "index_trades_on_currency_pair", using: :btree
+  add_index "trades", ["price"], name: "index_trades_on_price", using: :btree
+  add_index "trades", ["side"], name: "index_trades_on_side", using: :btree
+  add_index "trades", ["size"], name: "index_trades_on_size", using: :btree
+  add_index "trades", ["time"], name: "index_trades_on_time", using: :btree
+  add_index "trades", ["trade_id"], name: "index_trades_on_trade_id", unique: true, using: :btree
 
   create_table "wallets", force: :cascade do |t|
     t.string   "name"

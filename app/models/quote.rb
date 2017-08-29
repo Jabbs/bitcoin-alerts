@@ -5,7 +5,7 @@ class Quote < ActiveRecord::Base
   validates :size, presence: true
   validates :volume, presence: true
   validates :currency_pair, presence: true
-  validates :trade_id, presence: true, uniqueness: true
+  validates :trade_id, presence: true
   validates :traded_at, presence: true
 
   def self.get_previous_quotes(quote, lookback_minutes)

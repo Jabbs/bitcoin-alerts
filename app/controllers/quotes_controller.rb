@@ -11,8 +11,9 @@ class QuotesController < ApplicationController
       @simulation_sell_quote_ids = @simulation.orders.select { |o| o.side == "sell" }.map { |o| o.quote_id }
       @quotes = Quote.where(id: [@simulation.starting_quote_id..@simulation.ending_quote_id]).where(currency_pair: currency + "-USD").order("traded_at asc")
     else
-      starting_at = 7.days.ago
-      @quotes = Quote.where("traded_at > ?", starting_at).where(currency_pair: currency + "-USD").order("traded_at asc")
+      starting_at = 1.day.ago.beginning_of_day
+      ending_at = 1.day.ago.end_of_day
+      @quotes = Quote.where("traded_at >= ?", starting_at).where("traded_at <= ?", ending_at).where(currency_pair: currency + "-USD").order("traded_at asc")
     end
 
     @lookback_hours = 1
@@ -25,8 +26,8 @@ class QuotesController < ApplicationController
       @max = 5500
       @min = 3700
     elsif currency == "LTC"
-      @min = 35
-      @max = 55
+      @min = 55
+      @max = 65
     elsif currency == "ETH"
       @max = 350
       @min = 250
