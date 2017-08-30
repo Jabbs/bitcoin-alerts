@@ -8,6 +8,9 @@ class Quote < ActiveRecord::Base
   validates :trade_id, presence: true
   validates :traded_at, presence: true
 
+  has_one :order_book
+  has_many :trades
+
   def self.get_previous_quotes(quote, lookback_minutes)
     Quote.where(currency_pair: quote.currency_pair).where("traded_at > ?", quote.traded_at - lookback_minutes.minutes).where("traded_at < ?", quote.traded_at).order("traded_at desc")
   end
