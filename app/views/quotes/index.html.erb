@@ -24,7 +24,7 @@
     <% previous_volume = quote.volume %>
     <% previous_running_price_average = quote.running_price_average(@running_price_average_minutes) %>
     <% comparison_quote_prices << quote.price %>
-    <% if comparison_quote_prices.size == @lookback_hours*12 %>
+    <% if comparison_quote_prices.size == @lookback_minutes %>
       <% comparison_average_price = Numbers.average(comparison_quote_prices) %>
       <% comparison_quote_prices.shift %>
     <% end %>

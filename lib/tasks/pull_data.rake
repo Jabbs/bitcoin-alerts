@@ -21,6 +21,7 @@ namespace :bitcoin do
 
     # Pull trades
     page = Trade.count/300
+    page = 1 if page == 0
     while page != nil
       url = "https://bitcoinalerts.herokuapp.com/trades?page=" + page.to_s
       uri = URI(url)

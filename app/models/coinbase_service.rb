@@ -10,22 +10,25 @@ class CoinbaseService < ActiveRecord::Base
     return true
   end
 
-  def self.sync_trade(currency_pair="LTC-USD", lookback_seconds=120)
-    uri = URI("https://api.gdax.com/products/#{currency_pair}/trades?start=#{Time.now - lookback_seconds.seconds}")
+  def self.sync_trade(currency_pair="LTC-USD", quote_id=nil)
+    uri = URI("https://api.gdax.com/products/#{currency_pair}/trades?start=#{Time.now - 120.seconds}")
     response = Net::HTTP.get(uri)
     JSON.parse(response).each_with_index do |trade_attrs, index|
       trade_attrs["currency_pair"] = currency_pair
+      trade_attrs["quote_id"] = quote_id
       Trade.create(trade_attrs)
     end
     return true
   end
 
   def self.sync_all_quotes
+    quotes = []
     CURRENCY_PAIRS.each do |currency_pair|
-      CoinbaseService.sync_quote(currency_pair)
+      quote = CoinbaseService.sync_quote(currency_pair)
+      quotes << quote
       sleep 0.34
     end
-    return true
+    quotes
   end
 
   def self.sync_quote(currency_pair="LTC-USD")
@@ -41,6 +44,22 @@ class CoinbaseService < ActiveRecord::Base
       traded_at: last_trade["time"].to_datetime,
       trade_id: last_trade["trade_id"]
     )
+  end
+
+  def self.sync_all_order_books
+    CURRENCY_PAIRS.each do |currency_pair|
+      CoinbaseService.sync_order_book(currency_pair)
+      sleep 0.34
+    end
+    return true
+  end
+
+  def self.sync_order_book(currency_pair="LTC-USD", quote_id=nil)
+    client = Coinbase::Exchange::Client.new("", "", "")
+    response = client.orderbook(product_id: currency_pair, level: 2)
+    ob = OrderBook.create!(quote_id: quote_id, currency_pair: currency_pair, sequence: response["sequence"])
+    response["bids"].each { |i| ob.order_book_items.create(side: "sell", price: i[0], size: i[1], num_orders: i[2]) }
+    response["asks"].each { |i| ob.order_book_items.create(side: "buy", price: i[0], size: i[1], num_orders: i[2]) }
   end
 
   def self.trade(scheme, strategy, quote, simulation=nil)

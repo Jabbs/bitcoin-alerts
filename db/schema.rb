@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170827172234) do
+ActiveRecord::Schema.define(version: 20170830122653) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -40,6 +40,29 @@ ActiveRecord::Schema.define(version: 20170827172234) do
     t.datetime "created_at",               null: false
     t.datetime "updated_at",               null: false
   end
+
+  create_table "order_book_items", force: :cascade do |t|
+    t.string   "side"
+    t.decimal  "price",         precision: 20, scale: 10
+    t.decimal  "size",          precision: 20, scale: 10
+    t.integer  "num_orders"
+    t.integer  "order_book_id"
+    t.datetime "created_at",                              null: false
+    t.datetime "updated_at",                              null: false
+  end
+
+  add_index "order_book_items", ["order_book_id"], name: "index_order_book_items_on_order_book_id", using: :btree
+
+  create_table "order_books", force: :cascade do |t|
+    t.string   "currency_pair"
+    t.decimal  "sequence",      precision: 20
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
+    t.integer  "quote_id"
+  end
+
+  add_index "order_books", ["created_at"], name: "index_order_books_on_created_at", using: :btree
+  add_index "order_books", ["quote_id"], name: "index_order_books_on_quote_id", using: :btree
 
   create_table "orders", force: :cascade do |t|
     t.string   "client_id",       null: false
@@ -150,17 +173,19 @@ ActiveRecord::Schema.define(version: 20170827172234) do
 
   create_table "trades", force: :cascade do |t|
     t.datetime "time"
-    t.integer  "trade_id",      null: false
-    t.decimal  "price"
-    t.decimal  "size"
+    t.integer  "trade_id",                                null: false
+    t.decimal  "price",         precision: 20, scale: 10
+    t.decimal  "size",          precision: 20, scale: 10
     t.string   "side"
     t.string   "currency_pair"
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
+    t.datetime "created_at",                              null: false
+    t.datetime "updated_at",                              null: false
+    t.integer  "quote_id"
   end
 
   add_index "trades", ["currency_pair"], name: "index_trades_on_currency_pair", using: :btree
   add_index "trades", ["price"], name: "index_trades_on_price", using: :btree
+  add_index "trades", ["quote_id"], name: "index_trades_on_quote_id", using: :btree
   add_index "trades", ["side"], name: "index_trades_on_side", using: :btree
   add_index "trades", ["size"], name: "index_trades_on_size", using: :btree
   add_index "trades", ["time"], name: "index_trades_on_time", using: :btree

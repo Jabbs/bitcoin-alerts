@@ -12,8 +12,8 @@ class Quote < ActiveRecord::Base
     Quote.where(currency_pair: quote.currency_pair).where("traded_at > ?", quote.traded_at - lookback_minutes.minutes).where("traded_at < ?", quote.traded_at).order("traded_at desc")
   end
 
-  def self.recent_quotes(lookback_minutes=2)
-    Quote.where("traded_at > ?", lookback_minutes.minutes.ago)
+  def self.recent_quotes
+    Quote.where("traded_at > ?", 1.minute.ago)
   end
 
   def self.most_recent_currency_prices(quote_id)

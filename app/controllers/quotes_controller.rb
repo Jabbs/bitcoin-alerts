@@ -16,10 +16,9 @@ class QuotesController < ApplicationController
       @quotes = Quote.where("traded_at >= ?", starting_at).where("traded_at <= ?", ending_at).where(currency_pair: currency + "-USD").order("traded_at asc")
     end
 
-    @lookback_hours = 1
-    @lookback_quotes = 1
-    @percent_change_threshold = 1
-    @running_price_average_minutes = 20
+    @lookback_minutes = 10
+    @percent_change_threshold = 0.75
+    @running_price_average_minutes = 10
     @multiplier = 5
 
     if currency == "BTC"

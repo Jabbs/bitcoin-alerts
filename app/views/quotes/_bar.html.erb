@@ -23,7 +23,7 @@
         </span>
         <span class="pull-right" style="margin-right:4px;">
           <% if comparison_average_price.present? %>
-            (%<%= Numbers.percent_change(q.price, comparison_average_price, 2) %> &Delta; from <%= comparison_average_price.round(2) %> in <%= @lookback_hours %>hr running avg)
+            (%<%= Numbers.percent_change(q.price, comparison_average_price, 2) %> &Delta; from <%= comparison_average_price.round(2) %> in <%= @lookback_minutes %>min running avg)
           <% end %>
           <%= q.price.to_f %>
         </span>
