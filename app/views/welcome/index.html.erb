@@ -4,12 +4,12 @@
     </div>
     <div class="col-md-8">
       <% currency = params[:currency].present? ? params[:currency] : "btc" %>
-      <%= link_to "Bitcoin", "/quotes?currency=btc", class: "#{'active' if currency == "btc"}" %> |
-      <%= link_to "Litecoin", "/quotes?currency=ltc", class: "#{'active' if currency == "ltc"}" %> |
-      <%= link_to "Ethereum", "/quotes?currency=eth", class: "#{'active' if currency == "eth"}" %>
+      <%= link_to "Bitcoin", "/?currency=btc", class: "#{'active' if currency == "btc"}" %> |
+      <%= link_to "Litecoin", "/?currency=ltc", class: "#{'active' if currency == "ltc"}" %> |
+      <%= link_to "Ethereum", "/?currency=eth", class: "#{'active' if currency == "eth"}" %>
     </div>
     <div class="col-md-3">
-      Volume
+      SELL | BUY
     </div>
   </div>
   <% comparison_quote_prices = [] %>

@@ -5,9 +5,9 @@ namespace :bitcoin do
   desc 'Get quotes from app'
   task :pull_data => :environment do
     pull_data("Quote")
-    pull_data("Trade")
-    pull_data("OrderBook")
-    pull_data("OrderBookItem")
+    # pull_data("Trade")
+    # pull_data("OrderBook")
+    # pull_data("OrderBookItem")
   end
 
   def pull_data(class_name)
@@ -15,7 +15,7 @@ namespace :bitcoin do
     page = klass.count/300
     page = 1 if page == 0
     while page != nil
-      url = "https://bitcoinalerts.herokuapp.com/#{class_name.downcase.pluralize}?page=" + page.to_s
+      url = "https://bitcoinalerts.herokuapp.com/#{class_name.underscore.pluralize}?page=" + page.to_s
       uri = URI(url)
       response = Net::HTTP.get(uri)
       json = JSON.parse(response)

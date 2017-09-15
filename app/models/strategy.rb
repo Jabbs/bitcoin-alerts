@@ -4,12 +4,10 @@ class Strategy < ActiveRecord::Base
   scope :buy, -> { where(category: "buy") }
   scope :sell, -> { where(category: "sell") }
 
-  def self.get_return(starting_amount=4000, days=365, percent=1, lot_size=4, lot_wins_per_day=3)
+  def self.get_return(starting_amount=4000, days=365, percent=1)
     r = starting_amount.to_f
     days.times do
-      l = r.to_f/lot_size.to_f
-      a = (l * (1.to_f + percent.to_f/100.to_f)) - l
-      r = r + (a*lot_wins_per_day)
+      r = r * (1.to_f + percent.to_f/100.to_f)
     end
     r - starting_amount
   end

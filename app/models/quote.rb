@@ -11,6 +11,27 @@ class Quote < ActiveRecord::Base
   has_one :order_book
   has_many :trades
 
+  def self.average_price_per_hour
+    ActiveRecord::Base.logger.level = 1
+    first_quote = Quote.where("traded_at >= ?", 8.days.ago).where(currency_pair: "LTC-USD").order("traded_at asc").first
+    hour = first_quote.traded_at.hour
+    quote_count = 0
+    price_sum = 0
+    Quote.where("traded_at >= ?", 8.days.ago).where(currency_pair: "LTC-USD").order("traded_at asc").each do |q|
+      if q.traded_at.hour == hour
+        quote_count += 1
+        price_sum += q.price
+      else
+        puts "Day: #{q.traded_at.in_time_zone("Central Time (US & Canada)").strftime("%m/%d")}" if hour == 0
+        puts "Hour #{hour}: #{(price_sum.to_f/quote_count.to_f).round(2)}"
+        quote_count = 0
+        price_sum = 0
+        hour == 23 ? hour = 0 : hour += 1
+      end
+    end
+    return true
+  end
+
   def self.get_previous_quotes(quote, lookback_minutes)
     Quote.where(currency_pair: quote.currency_pair).where("traded_at > ?", quote.traded_at - lookback_minutes.minutes).where("traded_at < ?", quote.traded_at).order("traded_at desc")
   end
@@ -47,7 +68,7 @@ class Quote < ActiveRecord::Base
   end
 
   def traded_at_with_pretty_cst_time
-    self.traded_at.in_time_zone("Central Time (US & Canada)").strftime("%m/%d/%y:%-l:%M%P")
+    self.traded_at.in_time_zone("Central Time (US & Canada)").strftime("%m/%d:%-l:%M%P")
   end
 
   def passing_strategies

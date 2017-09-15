@@ -23,14 +23,15 @@
         </span>
         <span class="pull-right" style="margin-right:4px;">
           <% if comparison_average_price.present? %>
-            (%<%= Numbers.percent_change(q.price, comparison_average_price, 2) %> &Delta; from <%= comparison_average_price.round(2) %> in <%= @lookback_minutes %>min running avg)
+            <% running_percent_change = Numbers.percent_change(q.price, comparison_average_price, 2) %>
+            (<%= @lookback_minutes %>min running avg: <span class="<%= running_percent_change > 0 ? "red" : "green" %>">&Delta;<%= running_percent_change %>%</span>)
           <% end %>
           <%= q.price.to_f %>
         </span>
       </div>
       <% if previous_price.present? %>
         <span>
-          %<%= Numbers.percent_change(q.price, previous_price, 2) %>
+          <%= Numbers.percent_change(q.price, previous_price, 2) %>%
         </span>
       <% end %>
       <span class="pull-right">
@@ -41,6 +42,10 @@
     </div>
   </div>
   <div class="col-md-3 no-left-padding">
+
+
+
+    <!--
     <% if current_running_price_average && previous_running_price_average %>
       <%= (q.price - current_running_price_average).round(2) %> |
       <%= (previous_running_price_average - current_running_price_average).round(2) %> |
@@ -50,8 +55,8 @@
       <% vol_change = Numbers.percent_change(q.volume, previous_volume, 2) %>
       <% vol_class = vol_change > 2 ? "red" : "" %>
       <span class="<%= vol_class %>">
-        (%<%= vol_change %>)
+        (<%= vol_change %>%)
       </span>
-    <% end %>
+    <% end %> -->
   </div>
 </div>

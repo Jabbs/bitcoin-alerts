@@ -3,8 +3,8 @@ class Simulation < ActiveRecord::Base
   belongs_to :scheme
 
   def self.generate_standard(scheme=Scheme.last, print_final_results=false)
-    starting_quote_id = 20
-    ending_quote_id = 4712
+    starting_quote_id = 8091
+    ending_quote_id = 134052
     usd_starting_account_balance = 3000
     btc_starting_account_balance = 0.0
     eth_starting_account_balance = 0.0
