@@ -11,10 +11,31 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170915230112) do
+ActiveRecord::Schema.define(version: 20170915232508) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "bittrex_market_summaries", force: :cascade do |t|
+    t.string   "market_name"
+    t.decimal  "high",             precision: 25, scale: 10
+    t.decimal  "low",              precision: 25, scale: 10
+    t.decimal  "volume",           precision: 25, scale: 10
+    t.decimal  "last",             precision: 25, scale: 10
+    t.decimal  "base_volume",      precision: 25, scale: 10
+    t.datetime "time_stamp"
+    t.decimal  "bid",              precision: 25, scale: 10
+    t.decimal  "ask",              precision: 25, scale: 10
+    t.integer  "open_buy_orders"
+    t.integer  "open_sell_orders"
+    t.decimal  "prev_day",         precision: 25, scale: 10
+    t.datetime "created"
+    t.datetime "created_at",                                 null: false
+    t.datetime "updated_at",                                 null: false
+  end
+
+  add_index "bittrex_market_summaries", ["created_at"], name: "index_bittrex_market_summaries_on_created_at", using: :btree
+  add_index "bittrex_market_summaries", ["market_name"], name: "index_bittrex_market_summaries_on_market_name", using: :btree
 
   create_table "coins", force: :cascade do |t|
     t.decimal  "acquired_price", precision: 20, scale: 10

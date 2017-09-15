@@ -2,18 +2,6 @@ class CoinbaseService < ActiveRecord::Base
 
   CURRENCY_PAIRS = ['BTC-USD', 'ETH-USD', 'LTC-USD', 'LTC-BTC', 'ETH-BTC']
 
-  def self.sync_trade(currency_pair="LTC-USD", quote_id=nil)
-    ActiveRecord::Base.logger.level = 1
-    uri = URI("https://api.gdax.com/products/#{currency_pair}/trades?start=#{Time.now - 120.seconds}")
-    response = Net::HTTP.get(uri)
-    JSON.parse(response).each_with_index do |trade_attrs, index|
-      trade_attrs["currency_pair"] = currency_pair
-      trade_attrs["quote_id"] = quote_id
-      Trade.create(trade_attrs)
-    end
-    return true
-  end
-
   def self.sync_all_quotes
     quotes = []
     CURRENCY_PAIRS.each do |currency_pair|
@@ -38,20 +26,6 @@ class CoinbaseService < ActiveRecord::Base
       traded_at: last_trade["time"].to_datetime,
       trade_id: last_trade["trade_id"]
     )
-  end
-
-  def self.sync_order_book(currency_pair="LTC-USD", quote_id=nil)
-    ActiveRecord::Base.logger.level = 1
-    client = Coinbase::Exchange::Client.new("", "", "")
-    response = client.orderbook(product_id: currency_pair, level: 2)
-    ob = OrderBook.create!(quote_id: quote_id, currency_pair: currency_pair, sequence: response["sequence"])
-    response["bids"].each { |i| ob.order_book_items.create(side: "sell", price: i[0], size: i[1], num_orders: i[2]) }
-    response["asks"].each { |i| ob.order_book_items.create(side: "buy", price: i[0], size: i[1], num_orders: i[2]) }
-  end
-
-  def self.trade(scheme, strategy, quote, simulation=nil)
-    response = order(strategy, quote, "market", simulation)
-    handle_order_response(response, scheme, strategy, quote, simulation)
   end
 
   def self.order(strategy, quote, order_type="market", simulation=nil)
