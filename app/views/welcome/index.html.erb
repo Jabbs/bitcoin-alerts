@@ -2,15 +2,15 @@
   <div class="row">
     <div class="col-md-1">
     </div>
-    <div class="col-md-8">
+    <div class="col-md-11">
       <% currency = params[:currency].present? ? params[:currency] : "btc" %>
       <%= link_to "Bitcoin", "/?currency=btc", class: "#{'active' if currency == "btc"}" %> |
       <%= link_to "Litecoin", "/?currency=ltc", class: "#{'active' if currency == "ltc"}" %> |
       <%= link_to "Ethereum", "/?currency=eth", class: "#{'active' if currency == "eth"}" %>
     </div>
-    <div class="col-md-3">
+    <!-- <div class="col-md-3">
       SELL | BUY
-    </div>
+    </div> -->
   </div>
   <% comparison_quote_prices = [] %>
   <% comparison_average_price = nil %>
@@ -19,7 +19,9 @@
   <% current_running_price_average = nil %>
   <% previous_running_price_average = nil %>
   <% @quotes.each_with_index do |quote, index| %>
-    <%= render "welcome/bar", q: quote, comparison_average_price: comparison_average_price, previous_volume: previous_volume, previous_price: previous_price, current_running_price_average: quote.running_price_average(@running_price_average_minutes), previous_running_price_average: previous_running_price_average %>
+    <% if index % @visual_interval == 0 %>
+      <%= render "welcome/bar", q: quote, comparison_average_price: comparison_average_price, previous_volume: previous_volume, previous_price: previous_price, current_running_price_average: quote.running_price_average(@running_price_average_minutes), previous_running_price_average: previous_running_price_average %>
+    <% end %>
     <% previous_price = quote.price %>
     <% previous_volume = quote.volume %>
     <% previous_running_price_average = quote.running_price_average(@running_price_average_minutes) %>

@@ -13,6 +13,13 @@ class Scheme < ActiveRecord::Base
     logger.info "STOPPED PROCESSING SCHEME FOR #{quotes.pluck(:id)}. #{DateTime.now.in_time_zone("Central Time (US & Canada)").strftime("%m/%d/%y:%-l:%M%P")}"
   end
 
+  def print_strategies
+    self.strategies.each do |strategy|
+      puts strategy.name
+    end
+    return true
+  end
+
   def self.with_strategy(strategy_id)
     Scheme.where("strategy_ids && '{#{strategy_id}}'::int[]")
   end

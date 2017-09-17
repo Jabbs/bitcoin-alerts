@@ -8,6 +8,7 @@ namespace :bitcoin do
     # pull_data("Trade")
     # pull_data("OrderBook")
     # pull_data("OrderBookItem")
+    # pull_data("BittrexMarketSummary")
   end
 
   def pull_data(class_name)

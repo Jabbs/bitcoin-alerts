@@ -2,6 +2,11 @@ class CoinbaseService < ActiveRecord::Base
 
   CURRENCY_PAIRS = ['BTC-USD', 'ETH-USD', 'LTC-USD', 'LTC-BTC', 'ETH-BTC']
 
+  def self.trade(scheme, strategy, quote, simulation=nil)
+    response = order(strategy, quote, "market", simulation)
+    handle_order_response(response, scheme, strategy, quote, simulation)
+  end
+
   def self.sync_all_quotes
     quotes = []
     CURRENCY_PAIRS.each do |currency_pair|
