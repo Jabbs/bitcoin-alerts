@@ -23,15 +23,6 @@ class Strategy < ActiveRecord::Base
     end
   end
 
-  def self.send_slack_notification(message)
-    client = Slack::Web::Client.new
-    channel = Rails.env.production? ? "#bitcoin-alerts" : "#transactions-dev"
-    username = "Bitcoinbot"
-    icon_url = "https://image.freepik.com/free-icon/bitcoin-btc_318-41696.jpg"
-    message = "<!channel>   " + message
-    client.chat_postMessage(channel: channel, text: message.html_safe, as_user: false, username: username, icon_url: icon_url)
-  end
-
   def print_rule_descriptions
     self.rules.each { |r| r.print_description }
     return true

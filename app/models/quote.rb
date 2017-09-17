@@ -10,6 +10,7 @@ class Quote < ActiveRecord::Base
 
   has_one :order_book
   has_many :trades
+  has_many :slack_notifications
 
   def self.average_price_per_hour
     ActiveRecord::Base.logger.level = 1
@@ -53,6 +54,10 @@ class Quote < ActiveRecord::Base
       quote_id -= 1
     end
     nil
+  end
+
+  def sent_slack_notification?(hour_count, percent_change_threshold, lookback_in_hours)
+    self.slack_notifications.where("created_at > ?", hour_count.hours.ago).where(percent_change_threshold: percent_change_threshold).where(lookback_in_hours: lookback_in_hours).any?
   end
 
   def running_price_average(lookback_minutes)

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170915232508) do
+ActiveRecord::Schema.define(version: 20170917213402) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -155,6 +155,18 @@ ActiveRecord::Schema.define(version: 20170915232508) do
   end
 
   add_index "simulations", ["scheme_id"], name: "index_simulations_on_scheme_id", using: :btree
+
+  create_table "slack_notifications", force: :cascade do |t|
+    t.string   "channel"
+    t.integer  "quote_id"
+    t.integer  "lookback_in_hours"
+    t.integer  "percent_change_threshold"
+    t.text     "message"
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+  end
+
+  add_index "slack_notifications", ["quote_id"], name: "index_slack_notifications_on_quote_id", using: :btree
 
   create_table "strategies", force: :cascade do |t|
     t.string   "name"
