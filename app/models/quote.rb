@@ -56,10 +56,6 @@ class Quote < ActiveRecord::Base
     nil
   end
 
-  def sent_slack_notification?(hour_count, percent_change_threshold, lookback_in_hours)
-    self.slack_notifications.where("created_at > ?", hour_count.hours.ago).where(percent_change_threshold: percent_change_threshold).where(lookback_in_hours: lookback_in_hours).any?
-  end
-
   def running_price_average(lookback_minutes)
     Numbers.average(Quote.where(currency_pair: self.currency_pair).where("traded_at > ?", self.traded_at - lookback_minutes.minutes).where("traded_at <= ?", self.traded_at).pluck(:price))
   end
