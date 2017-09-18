@@ -22,15 +22,15 @@ class SlackService < ActiveRecord::Base
       direction = percent_change > 0 ? "UP" : "DOWN"
       message = "#{strategy_text}   *Recent price quote $#{quote.price.round(2)} is #{direction} #{percent_change.to_s}% (compared to the #{lookback_in_hours} hour running avg: $#{running_price_average.round(2).to_s})*"
       channel = get_channel(quote.currency_pair)
-      unless sent_slack_notification?(1, percent_change_threshold, lookback_in_hours)
+      unless sent_slack_notification?(1, percent_change_threshold, lookback_in_hours, quote.currency_pair)
         send_slack_notification(message, channel)
-        SlackNotification.create!(message: message, channel: channel, quote: quote, percent_change_threshold: percent_change_threshold, lookback_in_hours: lookback_in_hours)
+        SlackNotification.create!(message: message, channel: channel, quote: quote, percent_change_threshold: percent_change_threshold, lookback_in_hours: lookback_in_hours, currency_pair: quote.currency_pair)
       end
     end
   end
 
-  def sent_slack_notification?(hour_count, percent_change_threshold, lookback_in_hours)
-    self.slack_notifications.where("created_at > ?", hour_count.hours.ago).where(percent_change_threshold: percent_change_threshold).where(lookback_in_hours: lookback_in_hours).any?
+  def sent_slack_notification?(hour_count, percent_change_threshold, lookback_in_hours, currency_pair)
+    self.slack_notifications.where("created_at > ?", hour_count.hours.ago).where(percent_change_threshold: percent_change_threshold).where(lookback_in_hours: lookback_in_hours).where(currency_pair: currency_pair).any?
   end
 
   def self.get_channel(currency_pair)

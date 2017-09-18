@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170917213402) do
+ActiveRecord::Schema.define(version: 20170918012345) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -164,6 +164,7 @@ ActiveRecord::Schema.define(version: 20170917213402) do
     t.text     "message"
     t.datetime "created_at",               null: false
     t.datetime "updated_at",               null: false
+    t.string   "currency_pair"
   end
 
   add_index "slack_notifications", ["quote_id"], name: "index_slack_notifications_on_quote_id", using: :btree
