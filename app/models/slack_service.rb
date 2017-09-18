@@ -2,7 +2,7 @@ class SlackService < ActiveRecord::Base
 
   def self.send_alerts
     currency_pairs = ["BTC-USD", "LTC-USD", "ETH-USD"]
-    alert_strategies = [[3,6], [4,8], [5,10], [8,16], [10,24]]
+    alert_strategies = [[2,4], [3,6], [4,8], [5,10], [8,16], [10,24]]
 
     currency_pairs.each do |currency_pair|
       quote = Quote.where(currency_pair: currency_pair).order(:id).last
