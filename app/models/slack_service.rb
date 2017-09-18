@@ -30,7 +30,7 @@ class SlackService < ActiveRecord::Base
   end
 
   def self.sent_slack_notification?(hour_count, percent_change_threshold, lookback_in_hours, currency_pair)
-    self.slack_notifications.where("created_at > ?", hour_count.hours.ago).where(percent_change_threshold: percent_change_threshold).where(lookback_in_hours: lookback_in_hours).where(currency_pair: currency_pair).any?
+    SlackNotification.where("created_at > ?", hour_count.hours.ago).where(percent_change_threshold: percent_change_threshold).where(lookback_in_hours: lookback_in_hours).where(currency_pair: currency_pair).any?
   end
 
   def self.get_channel(currency_pair)
