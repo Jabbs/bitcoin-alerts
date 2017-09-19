@@ -6,4 +6,5 @@ Rails.application.routes.draw do
   resources :order_books, only: [:index]
   resources :order_book_items, only: [:index]
   resources :bittrex_market_summaries, only: [:index]
+  resources :charts, only: [:index]
 end

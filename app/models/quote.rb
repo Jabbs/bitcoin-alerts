@@ -33,6 +33,34 @@ class Quote < ActiveRecord::Base
     return true
   end
 
+  def self.five_minute_interval_analysis(currency_pair="BTC-USD")
+    # starts at 12:00AM CST
+    time = "29-8-2017".to_datetime.in_time_zone("Central Time (US & Canada)").beginning_of_day
+    avgs = []
+    288.times do
+      avg = Quote.time_analysis_avg(time, currency_pair)
+      puts time.strftime("%-l:%M%P")
+      puts avg.round(2)
+      puts "-------------------"
+      avgs << avg.round(2)
+      time = time + 5.minutes
+    end
+    avgs
+  end
+
+  def self.time_analysis_avg(time, currency_pair="BTC-USD", running_price_average_lookback_hrs=6)
+    percent_changes = []
+    ((DateTime.now.in_time_zone("Central Time (US & Canada)").beginning_of_day - time)/24/60/60 - 1.to_f).to_i.times do
+      quote = Quote.where(currency_pair: currency_pair).where("traded_at >= ?", time).order("traded_at asc").first
+      running_price_average = quote.running_price_average(running_price_average_lookback_hrs*60)
+      percent_change = Numbers.percent_change(quote.price, running_price_average)
+      percent_changes << percent_change
+      # puts percent_change.to_s + " (#{time.strftime("%m/%d")})"
+      time = time + 24.hours
+    end
+    Numbers.average(percent_changes)
+  end
+
   def self.get_previous_quotes(quote, lookback_minutes)
     Quote.where(currency_pair: quote.currency_pair).where("traded_at > ?", quote.traded_at - lookback_minutes.minutes).where("traded_at < ?", quote.traded_at).order("traded_at desc")
   end
@@ -56,8 +84,12 @@ class Quote < ActiveRecord::Base
     nil
   end
 
-  def running_price_average(lookback_minutes)
-    Numbers.average(Quote.where(currency_pair: self.currency_pair).where("traded_at > ?", self.traded_at - lookback_minutes.minutes).where("traded_at <= ?", self.traded_at).pluck(:price))
+  def running_price_average(lookback_minutes, lookforward_minutes=nil)
+    if lookforward_minutes.present?
+      Numbers.average(Quote.where(currency_pair: self.currency_pair).where("traded_at > ?", self.traded_at - lookback_minutes.minutes).where("traded_at <= ?", self.traded_at + lookforward_minutes.minutes).pluck(:price))
+    else
+      Numbers.average(Quote.where(currency_pair: self.currency_pair).where("traded_at > ?", self.traded_at - lookback_minutes.minutes).where("traded_at <= ?", self.traded_at).pluck(:price))
+    end
   end
 
   def assign_passing_strategies(strategies)

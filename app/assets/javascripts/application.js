@@ -15,6 +15,7 @@
 //= require jquery.remotipart
 //= require bootstrap.min
 //= require chart
+//= require Chart.min
 //= require gmaps/google
 //= require underscore
 //= require_tree .
