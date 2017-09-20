@@ -6,6 +6,7 @@ namespace :bitcoin do
     Rails.logger.info "Starting sync. #{begin_time.in_time_zone("Central Time (US & Canada)").strftime("%m/%d/%y:%-l:%M%P")}"
     CoinbaseService.sync_all_quotes
     BittrexService.sync_market_summaries
+    PoloniexService.sync_poloniex_quotes
     SlackService.send_alerts
     Scheme.process(Quote.recent_quotes)
     end_time = DateTime.now

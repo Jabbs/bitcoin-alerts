@@ -5,10 +5,7 @@ namespace :bitcoin do
   desc 'Get quotes from app'
   task :pull_data => :environment do
     pull_data("Quote")
-    # pull_data("Trade")
-    # pull_data("OrderBook")
-    # pull_data("OrderBookItem")
-    # pull_data("BittrexMarketSummary")
+    pull_data("BittrexMarketSummary")
   end
 
   def pull_data(class_name)
