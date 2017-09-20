@@ -6,6 +6,8 @@ class PoloniexService < ActiveRecord::Base
     response = Net::HTTP.get(uri)
     response = JSON.parse(response)
 
+    btc_price = response["USDT_BTC"]["last"]
+
     response.keys.each do |currency_pair|
       attrs = {}
       data = response[currency_pair]
@@ -13,6 +15,7 @@ class PoloniexService < ActiveRecord::Base
         attrs[k.underscore] = v unless k == "id"
       end
       attrs["currency_pair"] = currency_pair
+      attrs[btc_price] = btc_price
       PoloniexQuote.create(attrs)
     end
 

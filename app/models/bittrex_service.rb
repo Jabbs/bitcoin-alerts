@@ -7,11 +7,13 @@ class BittrexService < ActiveRecord::Base
     response = JSON.parse(response)
 
     if response["success"]
+      btc_price = response["result"].select { |r| r["MarketName"] == "USDT-BTC" }.first["Last"]
       response["result"].each do |data|
         attrs = {}
         data.each do |k,v|
           attrs[k.underscore] = v
         end
+        attrs["btc_price"] = btc_price
         BittrexMarketSummary.create(attrs)
       end
     else

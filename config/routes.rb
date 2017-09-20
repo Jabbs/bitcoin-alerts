@@ -7,4 +7,5 @@ Rails.application.routes.draw do
   resources :order_book_items, only: [:index]
   resources :bittrex_market_summaries, only: [:index]
   resources :charts, only: [:index]
+  match '/charts/:exchange/:currency_pair', to: "charts#show", via: :get
 end

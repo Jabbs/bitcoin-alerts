@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170920112618) do
+ActiveRecord::Schema.define(version: 20170920204438) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -32,6 +32,7 @@ ActiveRecord::Schema.define(version: 20170920112618) do
     t.datetime "created"
     t.datetime "created_at",                                 null: false
     t.datetime "updated_at",                                 null: false
+    t.decimal  "btc_price",        precision: 25, scale: 10
   end
 
   add_index "bittrex_market_summaries", ["created_at"], name: "index_bittrex_market_summaries_on_created_at", using: :btree
@@ -108,6 +109,7 @@ ActiveRecord::Schema.define(version: 20170920112618) do
     t.string   "currency_pair"
     t.datetime "created_at",                               null: false
     t.datetime "updated_at",                               null: false
+    t.decimal  "btc_price",      precision: 25, scale: 10
   end
 
   add_index "poloniex_quotes", ["created_at"], name: "index_poloniex_quotes_on_created_at", using: :btree

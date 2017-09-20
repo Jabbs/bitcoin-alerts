@@ -1,0 +1,98 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <div style="padding-top: 10px;">
+        <% BittrexMarketSummary::MARKETS.each do |currency_pair| %>
+          <%= link_to currency_pair, "/charts/bittrex/#{currency_pair}", class: "btn btn-default btn-xs #{'active' if params[:currency_pair] == currency_pair}" %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+  <hr>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="row">
+        <div class="col-md-12">
+          <h2 style="margin-top:0px;">
+            <%= params[:currency_pair] %>
+            <div class="pull-right" title="Coin Creation Date"><%= @created %></div>
+          </h2>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          Lines:
+          <% if !params[:lines].present? || params[:lines] == "hide" %>
+            <%= link_to "show", add_params_to_url(request.url, {"lines" => "show"}), class: "btn btn-default btn-xs" %>
+          <% else %>
+            <%= link_to "show", add_params_to_url(request.url, {"lines" => "hide"}), class: "btn btn-default btn-xs active" %>
+          <% end %>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          Minute Interval:
+          <% [1,5,10,20,60].each do |n| %>
+            <% active_class = params[:interval].try(:to_i) == n ? 'active' : '' %>
+            <% active_class = 'active' if n == 5 && !params[:interval].present? %>
+            <%= link_to n, add_params_to_url(request.url, {"interval" => n.to_s}), class: "btn btn-default btn-xs #{active_class}" %>
+          <% end %>
+        </div>
+      </div>
+      <canvas id="myChart"></canvas>
+      <% if params[:currency_pair].include?("BTC") %>
+        <small>*shown in satoshi's</small>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<script>
+var ctx = document.getElementById("myChart").getContext('2d');
+var showLines = <%= !params[:lines].present? || params[:lines] == "show" %>;
+
+var myChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: <%= raw(@labels) %>,
+      datasets: [{
+        label: "<%= @labels_by_day[0] %>",
+        data: <%= @prices_by_day[0] %>,
+        borderColor: "red",
+        lineTension: 0,
+        showLine: showLines,
+        borderWidth: 1
+      },{
+        label: "<%= @labels_by_day[1] %>",
+        data: <%= @prices_by_day[1] %>,
+        borderColor: "blue",
+        lineTension: 0,
+        showLine: showLines,
+        borderWidth: 1
+      },{
+        label: "<%= @labels_by_day[2] %>",
+        data: <%= @prices_by_day[2] %>,
+        borderColor: "green",
+        lineTension: 0,
+        showLine: showLines,
+        borderWidth: 1
+      },{
+        label: "<%= @labels_by_day[3] %>",
+        data: <%= @prices_by_day[3] %>,
+        borderColor: "yellow",
+        lineTension: 0,
+        showLine: showLines,
+        borderWidth: 1
+      }]
+    },
+    options: {
+      animation: {
+        duration: 0, // general animation time
+      },
+      hover: {
+        animationDuration: 0, // duration of animations when hovering an item
+      },
+      responsiveAnimationDuration: 0, // animation duration after a resize
+    }
+});
+</script>
