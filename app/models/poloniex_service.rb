@@ -15,7 +15,7 @@ class PoloniexService < ActiveRecord::Base
         attrs[k.underscore] = v unless k == "id"
       end
       attrs["currency_pair"] = currency_pair
-      attrs[btc_price] = btc_price
+      attrs["btc_price"] = btc_price
       PoloniexQuote.create(attrs)
     end
 
