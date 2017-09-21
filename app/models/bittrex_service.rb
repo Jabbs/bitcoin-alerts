@@ -8,12 +8,14 @@ class BittrexService < ActiveRecord::Base
 
     if response["success"]
       btc_price = response["result"].select { |r| r["MarketName"] == "USDT-BTC" }.first["Last"]
+      eth_price = response["result"].select { |r| r["MarketName"] == "USDT-ETH" }.first["Last"]
       response["result"].each do |data|
         attrs = {}
         data.each do |k,v|
           attrs[k.underscore] = v
         end
         attrs["btc_price"] = btc_price
+        attrs["eth_price"] = eth_price
         BittrexMarketSummary.create(attrs)
       end
     else

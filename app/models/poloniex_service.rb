@@ -7,6 +7,7 @@ class PoloniexService < ActiveRecord::Base
     response = JSON.parse(response)
 
     btc_price = response["USDT_BTC"]["last"]
+    eth_price = response["USDT_ETH"]["last"]
 
     response.keys.each do |currency_pair|
       attrs = {}
@@ -16,6 +17,7 @@ class PoloniexService < ActiveRecord::Base
       end
       attrs["currency_pair"] = currency_pair
       attrs["btc_price"] = btc_price
+      attrs["eth_price"] = eth_price
       PoloniexQuote.create(attrs)
     end
 

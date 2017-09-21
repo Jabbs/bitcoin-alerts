@@ -8,7 +8,7 @@ namespace :bitcoin do
     BittrexService.sync_market_summaries
     PoloniexService.sync_poloniex_quotes
     SlackService.send_alerts
-    Scheme.process(Quote.recent_quotes)
+    # Scheme.process(Quote.recent_quotes)
     end_time = DateTime.now
     Rails.logger.info "Completed sync. #{begin_time.to_i - end_time.to_i} seconds"
   end

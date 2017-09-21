@@ -39,6 +39,16 @@
           <% end %>
         </div>
       </div>
+      <div class="row">
+        <div class="col-md-12">
+          % Change Minutes:
+          <% [5,10,20,30,60,120,240,480,960].each do |n| %>
+            <% active_class = params[:percent_change_minutes].try(:to_i) == n ? 'active' : '' %>
+            <% active_class = 'active' if n == 5 && !params[:percent_change_minutes].present? %>
+            <%= link_to n, add_params_to_url(request.url, {"percent_change_minutes" => n.to_s}), class: "btn btn-default btn-xs #{active_class}" %>
+          <% end %>
+        </div>
+      </div>
       <canvas id="myChart"></canvas>
       <% if params[:currency_pair].include?("BTC") %>
         <small>*shown in satoshi's</small>
