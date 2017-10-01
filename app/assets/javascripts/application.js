@@ -14,8 +14,16 @@
 //= require jquery_ujs
 //= require jquery.remotipart
 //= require bootstrap.min
+//= require bootstrap-switch.min
+//= require bootstrap-slider.min
 //= require chart
 //= require Chart.min
 //= require gmaps/google
 //= require underscore
 //= require_tree .
+
+$(function() {
+
+
+
+});

@@ -1,0 +1,35 @@
+<div class="row">
+  <div class="col-md-6 col-sm-6 col-xs-6 half-right-side-padding">
+    <div class="form-group">
+      <input autofocus="autofocus" class="form-control" name="user[first_name]" placeholder="First name" required="required" type="text" value="<%= user.try(:first_name) %>">
+    </div>
+  </div>
+  <div class="col-md-6 col-sm-6 col-xs-6 half-left-side-padding">
+    <div class="form-group">
+      <input class="form-control" name="user[last_name]" placeholder="Last name" required="required" type="text" value="<%= user.try(:last_name) %>">
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12 col-sm-12 col-xs-12">
+    <label>Birthday:</label>
+  </div>
+</div>
+<%= render "users/forms/fields/birthday", user: user %>
+
+<div class="row bottom-margin-small">
+  <div class="col-md-10 col-sm-10 col-xs-10 col-centered">
+    <div class="row">
+      <div class="col-md-3 col-md-offset-3 col-sm-3 col-sm-offset-3 col-xs-4 col-xs-offset-2">
+        <label class="radio-inline">
+          <input type="radio" name="user[gender]" value="female" <%= "checked" if user.try(:gender) == "female" %>> Female
+        </label>
+      </div>
+      <div class="col-md-3 col-sm-3 col-xs-4">
+        <label class="radio-inline">
+          <input type="radio" name="user[gender]" value="male" <%= "checked" if user.try(:gender) == "male" %>> Male
+        </label>
+      </div>
+    </div>
+  </div>
+</div>

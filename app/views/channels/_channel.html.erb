@@ -1,0 +1,17 @@
+<div class="channel">
+  <div class="top" style="background: <%= channel.currency.color_hexidecimal %>;">
+    <%= show_svg("#{channel.currency.symbol}.svg") %>
+    <div class="name">
+      <%= channel.currency.name %>
+    </div>
+  </div>
+  <div class="middle" style="background: <%= channel.currency.color_hexidecimal %>;">
+    <%= channel.name.html_safe %>
+    during
+    <%= ["upward trending market", "downward trending market"].shuffle.first %>
+  </div>
+  <div class="bottom">
+    <% on_off = ['off_switch.png', 'on_switch.png'].shuffle.first %>
+    <%= image_tag(on_off) %>
+  </div>
+</div>

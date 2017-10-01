@@ -3,19 +3,14 @@
 @import "bootstrap-switch.min";
 @import "bootstrap-slider.min";
 
-.progress {
-  border-radius: 0;
-  margin:0px;
-}
+@import "settings/bootstrap_overrides";
+@import "settings/mixins";
+@import "settings/variables";
 
-a.active {
-  font-weight: bold;
-}
-
-.red {
-  color: red;
-}
-
-.green {
-  color: green;
-}
+@import "site/universal";
+@import "site/header";
+@import "site/forms";
+@import "site/onboarding";
+@import "site/channels";
+@import "site/cryptocoins";
+@import "site/cryptocoins-colors";

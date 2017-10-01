@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170921122904) do
+ActiveRecord::Schema.define(version: 20171001153340) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -39,6 +39,15 @@ ActiveRecord::Schema.define(version: 20170921122904) do
   add_index "bittrex_market_summaries", ["created_at"], name: "index_bittrex_market_summaries_on_created_at", using: :btree
   add_index "bittrex_market_summaries", ["market_name"], name: "index_bittrex_market_summaries_on_market_name", using: :btree
 
+  create_table "channels", force: :cascade do |t|
+    t.string   "name"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+    t.integer  "currency_id"
+  end
+
+  add_index "channels", ["currency_id"], name: "index_channels_on_currency_id", using: :btree
+
   create_table "coins", force: :cascade do |t|
     t.decimal  "acquired_price", precision: 20, scale: 10
     t.string   "currency"
@@ -54,6 +63,23 @@ ActiveRecord::Schema.define(version: 20170921122904) do
   add_index "coins", ["sold_at"], name: "index_coins_on_sold_at", using: :btree
   add_index "coins", ["wallet_id"], name: "index_coins_on_wallet_id", using: :btree
 
+  create_table "currencies", force: :cascade do |t|
+    t.string   "name"
+    t.string   "symbol"
+    t.datetime "released_at"
+    t.text     "description"
+    t.boolean  "active"
+    t.string   "founder"
+    t.string   "hash_algorithm"
+    t.string   "timestamping_method"
+    t.string   "color_hexidecimal"
+    t.string   "website"
+    t.decimal  "supply_total",        precision: 25, scale: 10
+    t.decimal  "supply_circulating",  precision: 25, scale: 10
+    t.datetime "created_at",                                    null: false
+    t.datetime "updated_at",                                    null: false
+  end
+
   create_table "daily_quotes_summaries", force: :cascade do |t|
     t.text     "quote_data"
     t.integer  "starting_quote_id"
@@ -63,6 +89,19 @@ ActiveRecord::Schema.define(version: 20170921122904) do
     t.datetime "created_at",               null: false
     t.datetime "updated_at",               null: false
   end
+
+  create_table "friendly_id_slugs", force: :cascade do |t|
+    t.string   "slug",                      null: false
+    t.integer  "sluggable_id",              null: false
+    t.string   "sluggable_type", limit: 50
+    t.string   "scope"
+    t.datetime "created_at"
+  end
+
+  add_index "friendly_id_slugs", ["slug", "sluggable_type", "scope"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type_and_scope", unique: true, using: :btree
+  add_index "friendly_id_slugs", ["slug", "sluggable_type"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type", using: :btree
+  add_index "friendly_id_slugs", ["sluggable_id"], name: "index_friendly_id_slugs_on_sluggable_id", using: :btree
+  add_index "friendly_id_slugs", ["sluggable_type"], name: "index_friendly_id_slugs_on_sluggable_type", using: :btree
 
   create_table "orders", force: :cascade do |t|
     t.string   "client_id",       null: false
@@ -137,15 +176,23 @@ ActiveRecord::Schema.define(version: 20170921122904) do
 
   create_table "rules", force: :cascade do |t|
     t.integer  "strategy_id"
-    t.decimal  "percent_increase", precision: 12, scale: 4
-    t.decimal  "percent_decrease", precision: 12, scale: 4
+    t.decimal  "percent_increase",      precision: 12, scale: 4
+    t.decimal  "percent_decrease",      precision: 12, scale: 4
     t.integer  "lookback_minutes"
     t.string   "comparison_logic"
     t.string   "operator"
-    t.datetime "created_at",                                null: false
-    t.datetime "updated_at",                                null: false
+    t.datetime "created_at",                                      null: false
+    t.datetime "updated_at",                                      null: false
+    t.integer  "channel_id"
+    t.decimal  "price_ceiling",         precision: 25, scale: 10
+    t.decimal  "price_floor",           precision: 25, scale: 10
+    t.datetime "time_constraint_start"
+    t.datetime "time_constraint_end"
+    t.string   "side"
+    t.string   "currency_pair"
   end
 
+  add_index "rules", ["channel_id"], name: "index_rules_on_channel_id", using: :btree
   add_index "rules", ["strategy_id"], name: "index_rules_on_strategy_id", using: :btree
 
   create_table "schemes", force: :cascade do |t|
@@ -203,6 +250,39 @@ ActiveRecord::Schema.define(version: 20170921122904) do
 
   add_index "strategies", ["category"], name: "index_strategies_on_category", using: :btree
   add_index "strategies", ["currency_pair"], name: "index_strategies_on_currency_pair", using: :btree
+
+  create_table "subscriptions", force: :cascade do |t|
+    t.integer  "user_id"
+    t.integer  "channel_id"
+    t.string   "notification_type"
+    t.integer  "frequency_in_minutes"
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+  end
+
+  add_index "subscriptions", ["channel_id"], name: "index_subscriptions_on_channel_id", using: :btree
+  add_index "subscriptions", ["user_id"], name: "index_subscriptions_on_user_id", using: :btree
+
+  create_table "users", force: :cascade do |t|
+    t.string   "username"
+    t.string   "email"
+    t.string   "password_digest"
+    t.string   "password_reset_token"
+    t.datetime "password_reset_sent_at"
+    t.boolean  "verified"
+    t.string   "verification_token"
+    t.datetime "verification_sent_at"
+    t.datetime "created_at",                                null: false
+    t.datetime "updated_at",                                null: false
+    t.string   "slug"
+    t.string   "auth_token"
+    t.boolean  "password_is_user_generated", default: true
+    t.string   "last_sign_in_ip"
+  end
+
+  add_index "users", ["auth_token"], name: "index_users_on_auth_token", unique: true, using: :btree
+  add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
+  add_index "users", ["slug"], name: "index_users_on_slug", unique: true, using: :btree
 
   create_table "wallets", force: :cascade do |t|
     t.string   "name"

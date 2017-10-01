@@ -1,0 +1,8 @@
+<% if current_user %>
+  <%= render "onboarding/modals/verification" %>
+<% else %>
+  <%= render "onboarding/modals/signup_options" %>
+  <%= render "onboarding/modals/signup" %>
+  <%= render "onboarding/modals/login" %>
+  <%= render "onboarding/modals/passreset" %>
+<% end %>

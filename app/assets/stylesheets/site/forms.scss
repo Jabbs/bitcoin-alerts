@@ -1,0 +1,38 @@
+form {
+  textarea:focus,
+  input[type="text"]:focus,
+  input[type="password"]:focus,
+  input[type="datetime"]:focus,
+  input[type="datetime-local"]:focus,
+  input[type="date"]:focus,
+  input[type="month"]:focus,
+  input[type="time"]:focus,
+  input[type="week"]:focus,
+  input[type="number"]:focus,
+  input[type="email"]:focus,
+  input[type="url"]:focus,
+  input[type="search"]:focus,
+  input[type="tel"]:focus,
+  input[type="color"]:focus,
+  .uneditable-input:focus {
+    border-color: $btc_orange;
+    border: 3px solid $btc_orange;
+    box-shadow: none;
+    outline: 0 none;
+  }
+
+  .btn {
+    padding: 3px 15px;
+    border: 3px solid $btc_orange;
+    @include circle_border;
+    font-size: 2em;
+    color: $white;
+    background-color: $btc_orange;
+
+    &:hover {
+      color: $white;
+      background-color: darken($btc_orange, 5%);
+      border-color: darken($btc_orange, 5%);
+    }
+  }
+}

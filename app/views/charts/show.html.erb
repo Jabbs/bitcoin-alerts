@@ -21,6 +21,15 @@
       </div>
       <div class="row">
         <div class="col-md-12">
+          Type:
+          <% active = !params[:chart_type].present? || params[:chart_type] == "dollar" ? "active" : "" %>
+          <%= link_to "$", add_params_to_url(request.url, {"chart_type" => "dollar"}), class: "btn btn-default btn-xs #{active}" %>
+          <% active = params[:chart_type].present? && params[:chart_type] == "percent" ? "active" : "" %>
+          <%= link_to "%", add_params_to_url(request.url, {"chart_type" => "percent"}), class: "btn btn-default btn-xs #{active}" %>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
           Lines:
           <% if !params[:lines].present? || params[:lines] == "hide" %>
             <%= link_to "show", add_params_to_url(request.url, {"lines" => "show"}), class: "btn btn-default btn-xs" %>
@@ -50,9 +59,6 @@
         </div>
       </div>
       <canvas id="myChart"></canvas>
-      <% if params[:currency_pair].include?("BTC") %>
-        <small>*shown in satoshi's</small>
-      <% end %>
     </div>
   </div>
 </div>
@@ -76,20 +82,6 @@ var myChart = new Chart(ctx, {
         label: "<%= @labels_by_day[1] %>",
         data: <%= @prices_by_day[1] %>,
         borderColor: "blue",
-        lineTension: 0,
-        showLine: showLines,
-        borderWidth: 1
-      },{
-        label: "<%= @labels_by_day[2] %>",
-        data: <%= @prices_by_day[2] %>,
-        borderColor: "green",
-        lineTension: 0,
-        showLine: showLines,
-        borderWidth: 1
-      },{
-        label: "<%= @labels_by_day[3] %>",
-        data: <%= @prices_by_day[3] %>,
-        borderColor: "yellow",
         lineTension: 0,
         showLine: showLines,
         borderWidth: 1

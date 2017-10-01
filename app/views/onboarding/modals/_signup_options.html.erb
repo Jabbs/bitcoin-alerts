@@ -1,0 +1,35 @@
+<div class="modal" id="signupOptionsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class="no-height">
+          <div class="pull-right">
+            <span class="fa-stack grey-light modal-dismiss" data-dismiss="modal">
+              <i class="fa fa-circle fa-stack-2x"></i>
+              <i class="fa fa-remove fa-stack-1x fa-inverse white"></i>
+            </span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12 col-sm-12 col-xs-12">
+            <%= render "sessions/facebook_btn", prefix: "Sign up" %>
+          </div>
+        </div>
+        <%= render "onboarding/rows/or_divider" %>
+        <div class="row top-margin-small bottom-margin">
+          <div class="col-md-12 col-sm-12 col-xs-12">
+            <a class="btn btn-lg btn-new-red btn-block signup-link">
+              <div class="row">
+                <div class="col-md-1 col-sm-1 col-xs-1"><i class="fa fa-envelope-o"></i></div>
+                <div class="col-md-10 col-sm-10 col-xs-10">Sign up with email</div>
+              </div>
+            </a>
+          </div>
+        </div>
+        <%= render "onboarding/rows/agreement_text" %>
+        <hr>
+        <%= render "onboarding/rows/already_have_account" %>
+      </div>
+    </div>
+  </div>
+</div>

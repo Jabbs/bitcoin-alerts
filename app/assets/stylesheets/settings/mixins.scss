@@ -1,0 +1,25 @@
+//-----------* MIXINS *-----------//
+@mixin rounded_border_lg { -webkit-border-radius: 10px; -moz-border-radius: 10px; border-radius: 10px; }
+@mixin rounded_border { -webkit-border-radius: 15px; -moz-border-radius: 15px; border-radius: 15px; }
+@mixin rounded_border_sm { -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
+@mixin rounded_top_right_border { -webkit-border-top-right-radius: 15px; -moz-border-top-right-radius: 15px; border-top-right-radius: 15px; }
+@mixin no_rounded_top_right_border { -webkit-border-top-right-radius: 0px; -moz-border-top-right-radius: 0px; border-top-right-radius: 0px; }
+@mixin rounded_top_left_border { -webkit-border-top-left-radius: 15px; -moz-border-top-left-radius: 15px; border-top-left-radius: 15px; }
+@mixin no_rounded_top_left_border { -webkit-border-top-left-radius: 0px; -moz-border-top-left-radius: 0px; border-top-left-radius: 0px; }
+@mixin rounded_bottom_left_border { -webkit-border-bottom-left-radius: 15px; -moz-border-bottom-left-radius: 15px; border-bottom-left-radius: 15px; }
+@mixin no_rounded_bottom_left_border { -webkit-border-bottom-left-radius: 0px; -moz-border-bottom-left-radius: 0px; border-bottom-left-radius: 0px; }
+@mixin rounded_bottom_right_border { -webkit-border-bottom-right-radius: 15px; -moz-border-bottom-right-radius: 15px; border-bottom-right-radius: 15px; }
+@mixin no_rounded_bottom_right_border { -webkit-border-bottom-right-radius: 0px; -moz-border-bottom-right-radius: 0px; border-bottom-right-radius: 0px; }
+@mixin rounded_border_sm { -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
+@mixin rounded_top_border { -webkit-border-top-right-radius: 15px; -moz-border-top-right-radius: 15px; border-top-right-radius: 15px;
+	 													-webkit-border-top-left-radius: 15px; -moz-border-top-left-radius: 15px; border-top-left-radius: 15px; }
+@mixin rounded_bottom_border { -webkit-border-bottom-right-radius: 15px; -moz-border-bottom-right-radius: 15px; border-bottom-right-radius: 15px;
+	 													-webkit-border-bottom-left-radius: 15px; -moz-border-bottom-left-radius: 15px; border-bottom-left-radius: 15px; }
+@mixin circle_border { -webkit-border-radius: 15em; -moz-border-radius: 15em; border-radius: 15em; }
+@mixin box_shadow { box-shadow: 0px 1px 2px darken(grey, 20%); -webkit-box-shadow: 0px 1px 2px darken(grey, 20%); }
+@mixin rotate {
+	-ms-transform: rotate(7deg); /* IE 9 */
+	-webkit-transform: rotate(7deg); /* Chrome, Safari, Opera */
+	transform: rotate(7deg);
+}
+//--------------------------------//

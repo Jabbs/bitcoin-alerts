@@ -1,0 +1,9 @@
+<div class="container-fluid">
+  <div class="row">
+    <% @channels.each do |channel| %>
+      <div class="col-lg-3 col-md-4 col-sm-4 col-xs-6">
+        <%= render "channels/channel", channel: channel %>
+      </div>
+    <% end %>
+  </div>
+</div>

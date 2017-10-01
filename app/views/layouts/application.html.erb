@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Bitcoinalerts</title>
+  <title><%= t('application.root.name') %></title>
   <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
   <%= csrf_meta_tags %>
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.css" rel="stylesheet">
 </head>
 <body>
-
-<%= yield %>
-
+  <%= render 'shared/flash', flash: flash %>
+  <%= render "layouts/header" %>
+  <div id="<%= page_id %>">
+	  <%= yield %>
+	</div>
 </body>
 </html>

@@ -1,0 +1,17 @@
+<tr>
+	<td style="padding-bottom:10px;">
+		To verify your <%= t('application.root.name') %> account please click the following link:
+	</td>
+</tr>
+<tr>
+	<td style="padding-bottom:10px;">
+		<%= link_to "Verify My Account", user_verification_url(@user, @user.verification_token), class: "btn btn-orange" %>
+	</td>
+</tr>
+<tr>
+	<td>
+		or copy/paste this into your address bar:
+		<br>
+		<%= user_verification_url(@user, @user.verification_token) %>
+	</td>
+</tr>

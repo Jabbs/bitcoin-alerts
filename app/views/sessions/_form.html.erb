@@ -1,0 +1,29 @@
+<%= form_tag '/login', class: "login-form" do %>
+  <%= hidden_field_tag :return_to_url, request.url %>
+  <div class="row">
+    <div class="col-xs-12 col-md-12">
+      <div class="form-group">
+        <input type="text" class="form-control input-lg" placeholder="Email" id="login_email" name="email" autofocus="true" required>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="form-group no-bottom-margin">
+        <input type="password" class="form-control input-lg" placeholder="Password" id="login_password" name="password" autocomplete="off" required>
+      </div>
+    </div>
+  </div>
+  <div class="row top-margin-tiny bottom-margin">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+      <div class="pull-right">
+        <%= link_to "Forgot your password?", "/password_reset", class: "passreset-link" %>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+      <%= button_tag 'Log in', data: { disable_with: "<i class='fa fa-circle-o-notch fa-spin'></i> Submitting..." }, class: "btn btn-lg btn-new-red btn-block" %>
+    </div>
+  </div>
+<% end %>

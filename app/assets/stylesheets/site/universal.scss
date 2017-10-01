@@ -1,0 +1,61 @@
+.inline { display: inline; }
+.inline-block { display: inline-block; }
+.huge { font-size: 500%; line-height: 100%; }
+.large {font-size: 375%;}
+.bigger {font-size: 180%;}
+.big {font-size: 150%;}
+.heavy {font-size: 130%;}
+.smaller {font-size: 90%;line-height: 130%;}
+.small {font-size: 80%;line-height: 120%;}
+.tiny {font-size: 70%;line-height: 120%;}
+.puny {font-size: 60%;line-height: 120%;}
+.no-right-margin { margin-right: 0px; }
+.no-left-margin { margin-left: 0px; }
+.no-top-margin { margin-top: 0px; }
+.no-bottom-margin { margin-bottom: 0px; }
+.no-margin { margin: 0px; }
+.bottom-margin-tiny { margin-bottom: 5px;}
+.bottom-margin-small { margin-bottom: 10px;}
+.bottom-margin { margin-bottom:20px; }
+.bottom-padding { padding-bottom:20px; }
+.bottom-padding-small { padding-bottom:10px; }
+.top-padding-small { padding-top:10px; }
+.small-right-margin { margin-right:5px; }
+.small-left-margin { margin-left:5px; }
+.little-left-margin { margin-left:10px; }
+.right-margin { margin-right:20px; }
+.left-margin { margin-left:20px; }
+.large-top-margin { margin-top:30px; }
+.large-bottom-margin { margin-bottom:30px; }
+.big-bottom-margin { margin-bottom:60px; }
+.big-top-margin { margin-top:60px; }
+.huge-top-margin { margin-top:100px; }
+.huge-bottom-margin { margin-bottom:100px; }
+.giant-bottom-margin { margin-bottom:300px; }
+.top-margin { margin-top:20px; }
+.top-margin-avg { margin-top:15px; }
+.top-margin-small { margin-top:10px; }
+.top-margin-tiny { margin-top:5px; }
+.center { text-align: center; }
+.right { text-align: right; }
+.left { text-align: left; }
+.left-padding { padding-left: 20px; }
+.right-padding { padding-right: 20px; }
+.pointer { cursor: pointer; }
+.no-pointer { cursor: auto; }
+.no-decoration { text-decoration: none; }
+a.no-decoration:hover { text-decoration: none; }
+a.no-decoration:focus { text-decoration: none; }
+.underline { text-decoration: underline; }
+.top-padding { padding-top:20px; }
+.no-padding {padding:0px;}
+.no-right-padding {padding-right:0px;}
+.no-left-padding {padding-left:0px;}
+.no-side-padding {padding-left:0px;padding-right:0px;}
+.half-side-padding {padding-left:7.5px;padding-right:7.5px;}
+.quarter-side-padding {padding-left:3.75px;padding-right:3.75px;}
+.half-right-side-padding {padding-right:7.5px;}
+.quarter-right-side-padding {padding-right:3.75px;}
+.half-left-side-padding {padding-left:7.5px;}
+.quarter-left-side-padding {padding-left:3.75px;}
+.no-height {height: 0px;}

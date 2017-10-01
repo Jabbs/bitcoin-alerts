@@ -23,6 +23,7 @@ namespace :bitcoin do
       end
       page += 1
       page = nil if json.empty?
+      puts "#{klass}, page #{page}"
     end
   end
 end

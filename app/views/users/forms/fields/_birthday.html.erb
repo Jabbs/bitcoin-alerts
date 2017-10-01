@@ -1,0 +1,46 @@
+<div class="row">
+  <div class="col-md-4 col-sm-4 col-xs-4 half-right-side-padding">
+    <div class="form-group">
+      <select class="form-control" name="user[birthday(2i)]">
+        <% month = current_user.try(:birthday).try(:month).try(:to_s) %>
+        <option value="" disabled selected="selected">Month</option>
+        <option value="1" <%= "selected" if month == "1" %>>Jan</option>
+        <option value="2" <%= "selected" if month == "2" %>>Feb</option>
+        <option value="3" <%= "selected" if month == "3" %>>Mar</option>
+        <option value="4" <%= "selected" if month == "4" %>>Apr</option>
+        <option value="5" <%= "selected" if month == "5" %>>May</option>
+        <option value="6" <%= "selected" if month == "6" %>>Jun</option>
+        <option value="7" <%= "selected" if month == "7" %>>Jul</option>
+        <option value="8" <%= "selected" if month == "8" %>>Aug</option>
+        <option value="9" <%= "selected" if month == "9" %>>Sep</option>
+        <option value="10" <%= "selected" if month == "10" %>>Oct</option>
+        <option value="11" <%= "selected" if month == "11" %>>Nov</option>
+        <option value="12" <%= "selected" if month == "12" %>>Dec</option>
+      </select>
+    </div>
+  </div>
+  <div class="col-md-4 col-sm-4 col-xs-4 half-side-padding">
+    <div class="form-group">
+      <select class="form-control" name="user[birthday(3i)]">
+        <option value="" disabled selected="selected">Day</option>
+        <% day = current_user.try(:birthday).try(:day) %>
+        <% 31.times do |n| %>
+          <% n = n + 1 %>
+          <option value="<%= n %>" <%= "selected" if n == day %>><%= n %></option>
+        <% end %>
+      </select>
+    </div>
+  </div>
+  <div class="col-md-4 col-sm-4 col-xs-4 half-left-side-padding">
+    <div class="form-group">
+      <select class="form-control" name="user[birthday(1i)]">
+        <option value="" disabled selected="selected">Year</option>
+        <% year = current_user.try(:birthday).try(:year) %>
+        <% 90.times do |n| %>
+          <% n = (Time.zone.now - 13.years).year - n %>
+          <option value="<%= n %>" <%= "selected" if n == year %>><%= n %></option>
+        <% end %>
+      </select>
+    </div>
+  </div>
+</div>

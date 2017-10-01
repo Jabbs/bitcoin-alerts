@@ -1,0 +1,7 @@
+<%= form_for user, :url => "/users", html: { id: "new_user_form"}, method: :post do |f| %>
+	<%= render "users/forms/fields/email", input_class: "input-lg" %>
+	<%= render "users/forms/fields/password", input_class: "input-lg" %>
+	<%= render "shared/spamcatcher_field" %>
+	<%= f.button "Sign up", data: { disable_with: "<i class='fa fa-circle-o-notch fa-spin'></i> Submitting..." }, class: "btn btn-lg btn-block bottom-margin-tiny" %>
+	<%= render "onboarding/rows/agreement_text" %>
+<% end %>

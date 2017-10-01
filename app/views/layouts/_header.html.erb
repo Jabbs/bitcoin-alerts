@@ -1,0 +1,32 @@
+<div class="header">
+  <div class="row">
+    <div class="col-md-4 col-sm-4 col-xs-4">
+      <%= link_to root_path do %>
+        <%= image_tag("logo.png", size: "50x50", class: "logo") %>
+      <% end %>
+    </div>
+    <div class="col-md-4 col-sm-4 col-xs-4">
+    </div>
+    <div class="col-md-4 col-sm-4 col-xs-4">
+      <div class="user-section">
+        <% if current_user.present? %>
+          <div class="pull-right">
+            <div class="dropdown">
+              <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <%= image_tag("//s3.amazonaws.com/caw-prod/default_profile_image.png", size: "40x40") %>
+              </a>
+              <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+                <li><%= link_to "Sign Out", logout_path, method: :delete, class: "dropdown-item" %></li>
+              </ul>
+            </div>
+          </div>
+        <% else %>
+          <div class="pull-right">
+            <%= link_to "Log in", login_path, class: "onboarding-link" %>
+            <%= link_to "Sign up", signup_path, class: "onboarding-link signup-btn" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

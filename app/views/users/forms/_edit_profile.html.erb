@@ -1,0 +1,38 @@
+<%= form_for user, url: { controller: 'users', :action => 'update_profile', user_id: user.id }, html: { class: "edit_user_profile_form"}, method: :put do |f| %>
+	<div class="row">
+		<div class="col-md-2">
+			Profile image:<br><span style="font-size:85%;">(300x300)</span>
+		</div>
+		<div class="col-md-10">
+			<%= f.fields_for :image_attachments do |builder| %>
+				<%= render 'shared/image_attachment_fields', f: builder %>
+			<% end %>
+			<%= link_to_add_fields "Attach image +", f, :image_attachments %>
+		</div>
+	</div>
+	<hr>
+	<div class="row">
+		<div class="col-md-2">
+			Location:
+		</div>
+		<div class="col-md-10">
+			<%= f.fields_for :location do |builder| %>
+	      <%= builder.text_field :street_1, style: "width:100%; padding-left:3px;", placeholder: "Street Address", class: "form-control" %>
+				<%= builder.text_field :city, style: "width:100%; padding-left:3px;", placeholder: "City", class: "form-control" %>
+				<%= builder.text_field :state, style: "width:100%; padding-left:3px;", placeholder: "State", class: "form-control" %>
+				<%= builder.text_field :zip, style: "width:100%; padding-left:3px;", placeholder: "Zip Code", class: "form-control" %>
+	    <% end %>
+		</div>
+	</div>
+	<hr>
+	<div class="row">
+		<div class="col-md-2">
+			Bio:
+		</div>
+		<div class="col-md-10">
+			<%= f.text_area :bio, placeholder: "Bio", rows: 6, autocomplete: :off, style: "width:100%;", required: true, maxlength: 500, class: "form-control"  %>
+		</div>
+	</div>
+	<hr>
+	<%= f.button "Submit", data: { disable_with: "<i class='fa fa-circle-o-notch fa-spin'></i> Submitting..." }, class: "btn btn-lg btn-default btn-block" %>
+<% end %>

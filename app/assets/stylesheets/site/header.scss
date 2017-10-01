@@ -1,0 +1,45 @@
+.header {
+  background: #f2f7f9;
+  border-bottom: 1px solid $grey;
+  height: 60px;
+
+  .logo {
+    margin-left: 30px;
+    margin-top: 5px;
+    @include circle_border;
+    &:hover {
+      @include rotate;
+    }
+  }
+
+  .dropdown {
+    margin-right: 20px;
+  }
+
+  .dropdown-menu a {
+    font-weight: bold;
+  }
+
+  .user-section {
+    margin-top: 3px;
+  }
+
+  .onboarding-link {
+    margin-top: 10px;
+    font-size: 22px;
+    padding: 3px 15px;
+    color: darken($btc_orange, 10%);
+
+    &:hover {
+      text-decoration: none;
+      color: darken($btc_orange, 20%);
+      border-color: darken($btc_orange, 20%);
+    }
+  }
+
+  .signup-btn {
+    border: 3px solid $btc_orange;
+    @include circle_border;
+  }
+
+}

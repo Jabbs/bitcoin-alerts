@@ -1,0 +1,27 @@
+<div class="modal" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class="no-height">
+          <div class="pull-right">
+            <span class="fa-stack grey-light modal-dismiss" data-dismiss="modal">
+              <i class="fa fa-circle fa-stack-2x"></i>
+              <i class="fa fa-remove fa-stack-1x fa-inverse white"></i>
+            </span>
+          </div>
+        </div>
+      	<div class="row">
+      		<div class="col-md-12">
+      			<%= render 'sessions/form' %>
+      		</div>
+      	</div>
+        <div class="row">
+          <div class="col-md-12">
+            <hr>
+          </div>
+        </div>
+        <%= render "onboarding/rows/dont_have_account" %>
+      </div>
+    </div>
+  </div>
+</div>

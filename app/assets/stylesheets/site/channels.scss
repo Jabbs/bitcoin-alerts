@@ -1,0 +1,53 @@
+#page-channels-index {
+  background: $blue_light;
+  padding: 30px 15px;
+
+  .channel {
+    font-size: 22px;
+    margin-bottom: 30px;
+
+    .top {
+      color: $white;
+      @include rounded_top_border;
+      padding: 20px 20px 10px 20px;
+      .name {
+        display: inline-block;
+        position: relative;
+        top: -7px;
+        left: 5px;
+      }
+    }
+
+    .middle {
+      color: $white;
+      padding: 0 20px 20px 20px;
+      height: 130px;
+    }
+
+    .bottom {
+      padding: 20px;
+      @include rounded_bottom_border;
+      background: $grey_light;
+      height: 80px;
+
+      .fa-toggle-on {
+        color: green;
+      }
+      img {
+        position: relative;
+        top: -25px;
+        height: 90px;
+      }
+    }
+
+    svg {
+      height: 30px;
+      width: 30px;
+    }
+
+    svg path {
+      fill: white;
+    }
+  }
+
+}

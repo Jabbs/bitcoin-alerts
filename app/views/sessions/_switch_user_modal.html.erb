@@ -1,0 +1,28 @@
+<% if admin_user? %>
+	<div class="modal" id="switchUserModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+				<div class="modal-body">
+					<%= form_tag '/switch_user' do %>
+						<h4>Find by:</h4>
+						<div class="input-group input-group-lg bottom-margin-small">
+						  <span class="input-group-addon" id="sizing-addon2"><i class='fa fa-user' style="padding-left:2px;padding-right:2px;"></i></span>
+						  <input type="text" class="form-control" placeholder="First Name" name="switch_user_first_name" aria-describedby="sizing-addon2" autocomplete="off">
+						</div>
+						<div class="input-group input-group-lg bottom-margin-small">
+						  <span class="input-group-addon" id="sizing-addon2"><i class='fa fa-user' style="padding-left:2px;padding-right:2px;"></i></span>
+						  <input type="text" class="form-control" placeholder="Last Name" name="switch_user_last_name" aria-describedby="sizing-addon2" autocomplete="off">
+						</div>
+						<h4 class="center">--- or ---</h4>
+						<div class="input-group input-group-lg bottom-margin-small">
+						  <span class="input-group-addon" id="sizing-addon2"><span style="padding-left:0px;padding-right:0px;">@</span></span>
+						  <input type="text" class="form-control" placeholder="Email Address" name="switch_user_email" aria-describedby="sizing-addon2" autocomplete="off">
+						</div>
+						<hr class="grey">
+				    <%= button_tag 'Switch User', data: { disable_with: "<i class='fa fa-circle-o-notch fa-spin'></i> Submitting..." }, class: "btn btn-default btn-lg btn-block" %>
+				  <% end %>
+				</div>
+	    </div>
+	  </div>
+	</div>
+<% end %>
