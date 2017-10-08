@@ -5,6 +5,8 @@ class User < ActiveRecord::Base
 
   before_create { generate_token(:auth_token) }
 
+  has_many :subscriptions
+
   def send_verification_email
     VerificationWorker.perform_async(self.id)
   end

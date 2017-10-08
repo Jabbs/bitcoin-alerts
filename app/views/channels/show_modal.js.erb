@@ -1,0 +1,5 @@
+$("#channel-modal-container").html("<%= escape_javascript(render 'channels/modal', channel: @channel) %>");
+$("#channel-modal-container").prepend("<%= escape_javascript(render 'channels/close_modal') %>");
+$('#channelModal').modal('show');
+
+channelModalActions();

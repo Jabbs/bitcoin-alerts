@@ -1,4 +1,5 @@
 class UserMailer < ActionMailer::Base
+  default from: "#{I18n.t('application.root.name')} <no-reply@bitcoinalerts.com>"
 
   def verification_email(user)
     @user = user

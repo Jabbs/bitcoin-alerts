@@ -1,5 +1,6 @@
 .header {
   background: #f2f7f9;
+  // background: lighten($grey_light, 5%);
   border-bottom: 1px solid $grey;
   height: 60px;
 
@@ -16,29 +17,47 @@
     margin-right: 20px;
   }
 
+  .dropdown-menu {
+    background-color: $grey_light;
+    border-radius: 15px;
+  }
+
+  .dropdown-menu > li > a:hover,
+  .dropdown-menu > li > a:focus {
+    color: #262626;
+    text-decoration: none;
+    background-color: inherit;
+  }
+
   .dropdown-menu a {
     font-weight: bold;
+    color: $white;
   }
 
   .user-section {
     margin-top: 3px;
   }
 
+  .signup-section {
+    margin-top: 15px;
+    margin-right: 30px;
+  }
+
   .onboarding-link {
     margin-top: 10px;
     font-size: 22px;
     padding: 3px 15px;
-    color: darken($btc_orange, 10%);
+    color: darken($yellow, 5%);
 
     &:hover {
       text-decoration: none;
-      color: darken($btc_orange, 20%);
-      border-color: darken($btc_orange, 20%);
+      color: darken($yellow, 10%);
+      border-color: darken($yellow, 10%);
     }
   }
 
   .signup-btn {
-    border: 3px solid $btc_orange;
+    border: 3px solid darken($yellow, 5%);
     @include circle_border;
   }
 

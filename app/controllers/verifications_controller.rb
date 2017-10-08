@@ -6,7 +6,7 @@ class VerificationsController < ApplicationController
       @user.update_attribute(:verified, true)
       sign_in @user unless current_user
       if @user.password_is_user_generated
-        redirect_to user_path(@user), notice: "Your account has been verified."
+        root_path, notice: "Your account has been verified."
       else
         @user.generate_token(:password_reset_token)
         @user.password_reset_sent_at = DateTime.now

@@ -6,8 +6,10 @@ Rails.application.routes.draw do
     post 'login' => :create
     delete 'logout' => :destroy
   end
-  resources :subscriptions
-  resources :channels
+  resources :channels do
+    resources :subscriptions
+    post 'show_modal'
+  end
   root 'channels#index'
   resources :quotes, only: [:index]
   resources :trades, only: [:index]

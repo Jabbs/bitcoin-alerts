@@ -1,9 +1,16 @@
 <div class="container-fluid">
   <div class="row">
-    <% @channels.each do |channel| %>
-      <div class="col-lg-3 col-md-4 col-sm-4 col-xs-6">
-        <%= render "channels/channel", channel: channel %>
+    <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12 col-centered">
+      <div class="row">
+        <% @channels.each do |channel| %>
+          <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12" style="min-width:330px;">
+            <%= render "channels/link_channel", channel: channel %>
+          </div>
+        <% end %>
       </div>
-    <% end %>
+    </div>
   </div>
+</div>
+
+<div id="channel-modal-container">
 </div>

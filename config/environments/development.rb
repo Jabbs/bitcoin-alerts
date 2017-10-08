@@ -4,6 +4,9 @@ Rails.application.configure do
   # Mailer configuration
   config.action_mailer.delivery_method = :letter_opener
 
+  # Set the default host option for mailer
+  config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
+
   # Send out mailers when .delivery is invoked
   config.action_mailer.perform_deliveries = true
 

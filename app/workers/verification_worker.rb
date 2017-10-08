@@ -6,7 +6,7 @@ class VerificationWorker
     user = User.find_by_id(user_id)
     if user
       user.generate_token(:verification_token)
-      user.save
+      user.save!
       UserMailer.verification_email(user).deliver_now
     end
   end

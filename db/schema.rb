@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171001153340) do
+ActiveRecord::Schema.define(version: 20171003152849) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -41,9 +41,13 @@ ActiveRecord::Schema.define(version: 20171001153340) do
 
   create_table "channels", force: :cascade do |t|
     t.string   "name"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
     t.integer  "currency_id"
+    t.text     "description"
+    t.text     "source_url"
+    t.string   "source_name"
+    t.integer  "frequency_in_minutes"
   end
 
   add_index "channels", ["currency_id"], name: "index_channels_on_currency_id", using: :btree
@@ -176,20 +180,22 @@ ActiveRecord::Schema.define(version: 20171001153340) do
 
   create_table "rules", force: :cascade do |t|
     t.integer  "strategy_id"
-    t.decimal  "percent_increase",      precision: 12, scale: 4
-    t.decimal  "percent_decrease",      precision: 12, scale: 4
+    t.decimal  "percent_increase",        precision: 12, scale: 4
+    t.decimal  "percent_decrease",        precision: 12, scale: 4
     t.integer  "lookback_minutes"
     t.string   "comparison_logic"
     t.string   "operator"
-    t.datetime "created_at",                                      null: false
-    t.datetime "updated_at",                                      null: false
+    t.datetime "created_at",                                        null: false
+    t.datetime "updated_at",                                        null: false
     t.integer  "channel_id"
-    t.decimal  "price_ceiling",         precision: 25, scale: 10
-    t.decimal  "price_floor",           precision: 25, scale: 10
+    t.decimal  "ceiling",                 precision: 25, scale: 10
+    t.decimal  "floor",                   precision: 25, scale: 10
     t.datetime "time_constraint_start"
     t.datetime "time_constraint_end"
     t.string   "side"
     t.string   "currency_pair"
+    t.string   "comparison_table"
+    t.string   "comparison_table_column"
   end
 
   add_index "rules", ["channel_id"], name: "index_rules_on_channel_id", using: :btree
@@ -255,9 +261,8 @@ ActiveRecord::Schema.define(version: 20171001153340) do
     t.integer  "user_id"
     t.integer  "channel_id"
     t.string   "notification_type"
-    t.integer  "frequency_in_minutes"
-    t.datetime "created_at",           null: false
-    t.datetime "updated_at",           null: false
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
   end
 
   add_index "subscriptions", ["channel_id"], name: "index_subscriptions_on_channel_id", using: :btree

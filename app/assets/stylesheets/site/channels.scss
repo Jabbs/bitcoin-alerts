@@ -2,11 +2,27 @@
   background: $blue_light;
   padding: 30px 15px;
 
+  .close {
+    position: absolute;
+    z-index: 20000;
+    top: 0px;
+    right: 10px;
+  }
+
+  .sort-link {
+    font-size: 2em;
+  }
+
+  a:hover, a:focus, a:active {
+    text-decoration: none;
+  }
+
   .channel {
     font-size: 22px;
     margin-bottom: 30px;
 
     .top {
+      font-size: 26px;
       color: $white;
       @include rounded_top_border;
       padding: 20px 20px 10px 20px;
@@ -21,22 +37,20 @@
     .middle {
       color: $white;
       padding: 0 20px 20px 20px;
-      height: 130px;
+      min-height: 130px;
     }
 
     .bottom {
       padding: 20px;
       @include rounded_bottom_border;
       background: $grey_light;
-      height: 80px;
+      min-height: 90px;
 
       .fa-toggle-on {
         color: green;
       }
       img {
-        position: relative;
-        top: -25px;
-        height: 90px;
+        height: 50px;
       }
     }
 
@@ -47,6 +61,37 @@
 
     svg path {
       fill: white;
+    }
+  }
+
+
+  .channel-long {
+    a {
+      color: $white;
+      text-decoration: underline;
+    }
+
+    .colon {
+      position: relative;
+      right: 10px;
+    }
+
+    svg {
+      height: 60px;
+      width: 60px;
+    }
+
+    .top {
+      font-size: 42px;
+    }
+
+    .middle {
+      font-size: 32px;
+    }
+
+    .description {
+      margin-top: 10px;
+      font-size: 22px;
     }
   }
 

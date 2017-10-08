@@ -1,4 +1,4 @@
-<div class="channel">
+<div class="channel <%= 'channel-long' if version == 'long' %>">
   <div class="top" style="background: <%= channel.currency.color_hexidecimal %>;">
     <%= show_svg("#{channel.currency.symbol}.svg") %>
     <div class="name">
@@ -9,9 +9,42 @@
     <%= channel.name.html_safe %>
     during
     <%= ["upward trending market", "downward trending market"].shuffle.first %>
+    <% if version == 'long' %>
+      <div class="description">
+        <%= channel.description %>
+        <hr>
+        <ul class="fa-ul">
+          <li>
+            <i class="fa-li fa fa-clock-o" title="frequency of alert logic"></i>
+            <span class="colon">:</span>
+            every 1 minute
+          </li>
+          <% if channel.source_name.present? && channel.source_url.present? %>
+            <li>
+              <i class="fa-li fa fa-database" title="data source"></i>
+              <span class="colon">:</span>
+              <%= link_to channel.source_url, channel.source_url, target: "_blank" %>
+            </li>
+          <% end %>
+          <li>
+            <i class="fa-li fa fa-bell" title="delivery method"></i>
+            <span class="colon">:</span>
+            email
+            <small>(at most, once every <%= frequency_text(channel) %>)</small>
+          </li>
+        </ul>
+      </div>
+    <% end %>
   </div>
   <div class="bottom">
-    <% on_off = ['off_switch.png', 'on_switch.png'].shuffle.first %>
-    <%= image_tag(on_off) %>
+    <% on_off = 'on' %>
+    <% on_off = 'off' if current_user.subscriptions.where(channel_id: channel.id).any? %>
+    <div class="subscription-link-container-channel-<%= channel.id %>">
+      <% if on_off == 'on' %>
+        <%= render 'channels/on_switch_link', channel: channel %>
+      <% elsif on_off == 'off' %>
+        <%= render 'channels/off_switch_link', channel: channel %>
+      <% end %>
+    </div>
   </div>
 </div>

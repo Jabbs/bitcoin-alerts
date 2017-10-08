@@ -59,3 +59,7 @@ a.no-decoration:focus { text-decoration: none; }
 .half-left-side-padding {padding-left:7.5px;}
 .quarter-left-side-padding {padding-left:3.75px;}
 .no-height {height: 0px;}
+.col-centered {
+	float: none;
+	margin: 0 auto;
+}

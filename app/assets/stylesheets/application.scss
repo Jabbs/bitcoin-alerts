@@ -3,9 +3,9 @@
 @import "bootstrap-switch.min";
 @import "bootstrap-slider.min";
 
-@import "settings/bootstrap_overrides";
-@import "settings/mixins";
 @import "settings/variables";
+@import "settings/mixins";
+@import "settings/bootstrap_overrides";
 
 @import "site/universal";
 @import "site/header";
