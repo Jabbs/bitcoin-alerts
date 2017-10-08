@@ -18,7 +18,6 @@ Rails.application.routes.draw do
   resources :order_book_items, only: [:index]
   resources :bittrex_market_summaries, only: [:index]
   resources :password_resets, only: [:new, :create, :edit, :update]
-  resources :poloniex_quotes, only: [:index]
   resources :charts, only: [:index]
   match '/charts/:exchange/:currency_pair', to: "charts#show", via: :get
   match '/login',                           to: 'onboarding#login', via: :get

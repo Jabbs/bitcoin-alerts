@@ -6,7 +6,6 @@ namespace :bitcoin do
   task :pull_data => :environment do
     pull_data("Quote")
     pull_data("BittrexMarketSummary")
-    pull_data("PoloniexQuote")
   end
 
   def pull_data(class_name)
