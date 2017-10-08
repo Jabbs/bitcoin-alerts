@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171003152849) do
+ActiveRecord::Schema.define(version: 20171008142253) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -139,26 +139,6 @@ ActiveRecord::Schema.define(version: 20171003152849) do
   add_index "orders", ["scheme_id"], name: "index_orders_on_scheme_id", using: :btree
   add_index "orders", ["simulation_id"], name: "index_orders_on_simulation_id", using: :btree
   add_index "orders", ["strategy_id"], name: "index_orders_on_strategy_id", using: :btree
-
-  create_table "poloniex_quotes", force: :cascade do |t|
-    t.decimal  "last",           precision: 25, scale: 10
-    t.decimal  "lowest_ask",     precision: 25, scale: 10
-    t.decimal  "highest_bid",    precision: 25, scale: 10
-    t.decimal  "percent_change", precision: 25, scale: 10
-    t.decimal  "base_volume",    precision: 25, scale: 10
-    t.decimal  "quote_volume",   precision: 25, scale: 10
-    t.boolean  "is_frozen"
-    t.decimal  "high24hr",       precision: 25, scale: 10
-    t.decimal  "low24hr",        precision: 25, scale: 10
-    t.string   "currency_pair"
-    t.datetime "created_at",                               null: false
-    t.datetime "updated_at",                               null: false
-    t.decimal  "btc_price",      precision: 25, scale: 10
-    t.decimal  "eth_price",      precision: 25, scale: 10
-  end
-
-  add_index "poloniex_quotes", ["created_at"], name: "index_poloniex_quotes_on_created_at", using: :btree
-  add_index "poloniex_quotes", ["currency_pair"], name: "index_poloniex_quotes_on_currency_pair", using: :btree
 
   create_table "quotes", force: :cascade do |t|
     t.string   "currency_pair",                                               null: false
