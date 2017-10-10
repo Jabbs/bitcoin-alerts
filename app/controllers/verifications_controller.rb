@@ -1,5 +1,4 @@
 class VerificationsController < ApplicationController
-
   def show
     if User.find_by_verification_token(params[:id].to_s)
       @user = User.find_by_verification_token(params[:id].to_s)
@@ -17,5 +16,4 @@ class VerificationsController < ApplicationController
       redirect_to root_path, notice: "There was a problem verifying your account. Please contact support for more details."
     end
   end
-
 end

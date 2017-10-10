@@ -3,7 +3,7 @@
     <div class="col-md-12 col-sm-12 col-xs-12">
       <div class="form-group">
         <label for="currency_id">Currency</label>
-        <%= f.select :currency_id, Currency.where.not(color_hexidecimal: nil).where.not(symbol: ["BCH"]).order(:name).collect { |c| [ c.name + " (#{c.symbol})", c.id ] }, {}, {style: "width:100%;", class: "form-control"} %>
+        <%= f.select :currency_id, Currency.with_bittrex_data.order(:name).collect { |c| [ c.name + " (#{c.symbol})", c.id ] }, {}, {style: "width:100%;", class: "form-control"} %>
       </div>
     </div>
   </div>
@@ -50,9 +50,9 @@
   <hr>
   <h3>Rules:</h3>
 
-
   <%= f.fields_for :rules do |ff| %>
-    <% columns = [[:percent_increase, "Percent increase", nil],[:percent_decrease, "Percent decrease", nil],[:price_ceiling, "Ceiling", nil],[:price_floor, "Floor", nil]],[:lookback_minutes, "Lookback minutes", nil] %>
+    <%= ff.hidden_field :operator, value: "or" %>
+    <% columns = [[:percent_increase, "Percent increase", nil],[:percent_decrease, "Percent decrease", nil],[:ceiling, "Ceiling", nil],[:floor, "Floor", nil],[:lookback_minutes, "Lookback minutes", nil]] %>
     <% columns.each do |c| %>
       <div class="row">
         <div class="col-md-12 col-sm-12 col-xs-12">
@@ -76,6 +76,22 @@
         <div class="form-group">
           <label>Comparison table column</label>
           <%= ff.select :comparison_table_column, ["last", "volume", "base_volume"], {}, { style: "width:100%;", class: "form-control" } %>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="form-group">
+          <label>Comparison table scope method</label>
+          <%= ff.text_field :comparison_table_scope_method, class: "form-control", placeholder: "Comparison table scope method" %>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="form-group">
+          <label>Comparison table scope value</label>
+          <%= ff.text_field :comparison_table_scope_value, class: "form-control", placeholder: "Comparison table scope value" %>
         </div>
       </div>
     </div>

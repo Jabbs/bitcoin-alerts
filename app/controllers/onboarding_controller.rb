@@ -1,7 +1,5 @@
 class OnboardingController < ApplicationController
-
   def login
-
   end
 
   def signup
@@ -9,6 +7,5 @@ class OnboardingController < ApplicationController
   end
 
   def password_reset
-
   end
 end

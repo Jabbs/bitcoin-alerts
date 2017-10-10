@@ -4,6 +4,11 @@
   border-bottom: 1px solid $grey;
   height: 60px;
 
+  #dropdownMenuLink {
+    font-size: 28px;
+    color: $grey_darkest;
+  }
+
   .logo {
     margin-left: 30px;
     margin-top: 5px;

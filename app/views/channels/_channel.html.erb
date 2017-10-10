@@ -7,18 +7,11 @@
   </div>
   <div class="middle" style="background: <%= channel.currency.color_hexidecimal %>;">
     <%= channel.name.html_safe %>
-    during
-    <%= ["upward trending market", "downward trending market"].shuffle.first %>
     <% if version == 'long' %>
       <div class="description">
         <%= channel.description %>
         <hr>
         <ul class="fa-ul">
-          <li>
-            <i class="fa-li fa fa-clock-o" title="frequency of alert logic"></i>
-            <span class="colon">:</span>
-            every 1 minute
-          </li>
           <% if channel.source_name.present? && channel.source_url.present? %>
             <li>
               <i class="fa-li fa fa-database" title="data source"></i>
@@ -27,24 +20,40 @@
             </li>
           <% end %>
           <li>
+            <i class="fa-li fa fa-clock-o" title="frequency of alert logic"></i>
+            <span class="colon">:</span>
+            checked every 1 minute
+          </li>
+          <li>
             <i class="fa-li fa fa-bell" title="delivery method"></i>
             <span class="colon">:</span>
-            email
-            <small>(at most, once every <%= frequency_text(channel) %>)</small>
+            via email
           </li>
+          <li>
+            <i class="fa-li fa fa-blank" title="delivery method"></i>
+            <span class="colon" style="color: <%= channel.currency.color_hexidecimal %>;">:</span>
+            (at most, once every <%= frequency_text(channel) %>)
+          </li>
+
         </ul>
       </div>
     <% end %>
   </div>
   <div class="bottom">
-    <% on_off = 'on' %>
-    <% on_off = 'off' if current_user.subscriptions.where(channel_id: channel.id).any? %>
-    <div class="subscription-link-container-channel-<%= channel.id %>">
-      <% if on_off == 'on' %>
-        <%= render 'channels/on_switch_link', channel: channel %>
-      <% elsif on_off == 'off' %>
-        <%= render 'channels/off_switch_link', channel: channel %>
+    <% if current_user.present? %>
+      <% on_off = 'on' %>
+      <% on_off = 'off' if current_user.subscriptions.where(channel_id: channel.id).any? %>
+      <div class="subscription-link-container-channel-<%= channel.id %>">
+        <% if on_off == 'on' %>
+          <%= render 'channels/on_switch_link', channel: channel %>
+        <% elsif on_off == 'off' %>
+          <%= render 'channels/off_switch_link', channel: channel %>
+        <% end %>
+      </div>
+    <% else %>
+      <%= link_to signup_path do %>
+        <%= image_tag('off_switch.png') %>
       <% end %>
-    </div>
+    <% end %>
   </div>
 </div>

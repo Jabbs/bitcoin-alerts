@@ -18,11 +18,11 @@ module SessionsHelper
   end
 
   def admin_user?
-    true if current_user && current_user.is?("admin")
+    true if current_user && current_user.admin?
   end
 
   def redirect_non_admin
-    redirect_to root_path unless current_user && current_user.is?("admin")
+    redirect_to root_path unless current_user && current_user.admin?
   end
 
   def signed_in_user

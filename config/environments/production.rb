@@ -5,21 +5,27 @@ Rails.application.configure do
   config.middleware.use ExceptionNotification::Rack,
     :email => {
       :email_prefix => "[ERROR] ",
-      :sender_address => %{"STOCK ALERT" <pj.stock.alerts@gmail.com>},
+      :sender_address => %{"STOCK ALERT" <bitcoinalerts@no-reply.com>},
       :exception_recipients => %w{petejabbour1@gmail.com}
     }
 
   # Code is not reloaded between requests.
   config.cache_classes = true
 
+  # Don't care if the mailer can't send
+  config.action_mailer.raise_delivery_errors = false
+
+  # Send out mailers when .delivery is invoked
+  config.action_mailer.perform_deliveries = true
+
   # Gmail mailer configuration
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
-    :address              => 'smtp.gmail.com',
+    :address              => 'smtp.mailgun.org',
     :port                 => 587,
-    :domain               => 'stockalerts.herokuapp.com',
-    :user_name            => 'pj.stock.alerts@gmail.com',
-    :password             => 'wp7u8Zyz,hnZk(Z',
+    :domain               => 'bitalertnow.com',
+    :user_name            => ENV['MAILGUN_USERNAME'],
+    :password             => ENV['MAILGUN_PASSWORD'],
     :authentication       => 'plain',
     :enable_starttls_auto => true  }
 

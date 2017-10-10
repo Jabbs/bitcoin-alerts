@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171008142253) do
+ActiveRecord::Schema.define(version: 20171008214324) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -39,15 +39,26 @@ ActiveRecord::Schema.define(version: 20171008142253) do
   add_index "bittrex_market_summaries", ["created_at"], name: "index_bittrex_market_summaries_on_created_at", using: :btree
   add_index "bittrex_market_summaries", ["market_name"], name: "index_bittrex_market_summaries_on_market_name", using: :btree
 
+  create_table "channel_notifications", force: :cascade do |t|
+    t.integer  "channel_id"
+    t.integer  "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "channel_notifications", ["channel_id"], name: "index_channel_notifications_on_channel_id", using: :btree
+  add_index "channel_notifications", ["user_id"], name: "index_channel_notifications_on_user_id", using: :btree
+
   create_table "channels", force: :cascade do |t|
     t.string   "name"
-    t.datetime "created_at",           null: false
-    t.datetime "updated_at",           null: false
+    t.datetime "created_at",                          null: false
+    t.datetime "updated_at",                          null: false
     t.integer  "currency_id"
     t.text     "description"
     t.text     "source_url"
     t.string   "source_name"
     t.integer  "frequency_in_minutes"
+    t.boolean  "active",               default: true
   end
 
   add_index "channels", ["currency_id"], name: "index_channels_on_currency_id", using: :btree
@@ -160,22 +171,24 @@ ActiveRecord::Schema.define(version: 20171008142253) do
 
   create_table "rules", force: :cascade do |t|
     t.integer  "strategy_id"
-    t.decimal  "percent_increase",        precision: 12, scale: 4
-    t.decimal  "percent_decrease",        precision: 12, scale: 4
+    t.decimal  "percent_increase",              precision: 12, scale: 4
+    t.decimal  "percent_decrease",              precision: 12, scale: 4
     t.integer  "lookback_minutes"
     t.string   "comparison_logic"
     t.string   "operator"
-    t.datetime "created_at",                                        null: false
-    t.datetime "updated_at",                                        null: false
+    t.datetime "created_at",                                              null: false
+    t.datetime "updated_at",                                              null: false
     t.integer  "channel_id"
-    t.decimal  "ceiling",                 precision: 25, scale: 10
-    t.decimal  "floor",                   precision: 25, scale: 10
+    t.decimal  "ceiling",                       precision: 25, scale: 10
+    t.decimal  "floor",                         precision: 25, scale: 10
     t.datetime "time_constraint_start"
     t.datetime "time_constraint_end"
     t.string   "side"
     t.string   "currency_pair"
     t.string   "comparison_table"
     t.string   "comparison_table_column"
+    t.string   "comparison_table_scope_method"
+    t.string   "comparison_table_scope_value"
   end
 
   add_index "rules", ["channel_id"], name: "index_rules_on_channel_id", using: :btree
@@ -257,12 +270,13 @@ ActiveRecord::Schema.define(version: 20171008142253) do
     t.boolean  "verified"
     t.string   "verification_token"
     t.datetime "verification_sent_at"
-    t.datetime "created_at",                                null: false
-    t.datetime "updated_at",                                null: false
+    t.datetime "created_at",                                 null: false
+    t.datetime "updated_at",                                 null: false
     t.string   "slug"
     t.string   "auth_token"
     t.boolean  "password_is_user_generated", default: true
     t.string   "last_sign_in_ip"
+    t.boolean  "admin",                      default: false
   end
 
   add_index "users", ["auth_token"], name: "index_users_on_auth_token", unique: true, using: :btree

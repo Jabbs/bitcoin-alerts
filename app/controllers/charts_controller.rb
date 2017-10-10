@@ -1,4 +1,5 @@
 class ChartsController < ApplicationController
+  before_action :redirect_non_admin
 
   def index
     date = DateTime.now - 24.hours

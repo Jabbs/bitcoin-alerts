@@ -6,6 +6,7 @@ class UsersController < ApplicationController
       @user.password = SecureRandom.urlsafe_base64
       @user.password_is_user_generated = false
     end
+    @user.username = @user.email.split("@").try(:first).try(:first, 25)
     if @user.save
       sign_in @user
       @user.send_verification_email

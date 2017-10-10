@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title><%= t('application.root.name') %></title>
+		<style type="text/css">
+			body { font-family: sans-serif, "Helvetica Neue", Helvetica, Arial; color: #253238; }
+			h2 { font-size: 32px; margin: 0px; }
+			h3 { margin: 0px; }
+			table { border-spacing: 0; width: 100%; }
+			hr { border: none; border-top: solid 5px #183469; color: #ffffff; background-color: #ffffff; }
+			a { color: #253238; text-decoration: none; }
+			.big { font-size: 24px; font-weight: 400; line-height: 30px; }
+			.large { font-size: 18px; font-weight: 400; }
+      .small { font-size: 14px; }
+			.signature { color: #868686; }
+			.outer-table { background: #ffffff; padding: 0px 20px 20px 20px; }
+			.inner-table {
+        text-align: left; background: <%= @currency.color_hexidecimal %>; margin: 5px 0 0 0; padding: 0px; max-width: 550px;
+        -webkit-border-radius: 15px; -moz-border-radius: 15px; border-radius: 15px;
+        padding: 40px; text-align: center; color: #ffffff
+      }
+			.center { text-align: center; }
+			.pull-right { float: right !important; }
+			.rounded-border {border: 1px solid #d1d7da; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; }
+			.summary { padding: 10px; background: #6681b3; color: white; }
+			.bottom-summary { padding: 4px; background: #6681b3; }
+			.date { font-size: 0.9em; padding-left: 10px; }
+			.footer { color: #888888; font-size: 11px; font-weight: 400; padding: 20px 0px 0px 0px; line-height: 14px; }
+			.btn { display: inline-block; border-radius: 8px; text-decoration: none; cursor: pointer; text-align: center;
+				padding: 12px 40px; font-size: 16px; font-weight: 400; color: #253238; background-color: #e0e0e0; border-color: #ccc;
+			}
+		</style>
+	</head>
+	<body>
+		<table class="outer-table">
+      <tr>
+        <td>
+          <table style="width: 550px;">
+            <tr>
+              <td style="padding-bottom:10px;", class="center">
+                <%= link_to root_url do %>
+                  <%= image_tag("logo.png", size: "50x50", class: "logo") %>
+                <% end %>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+			<tr>
+				<td>
+					<table class="inner-table">
+            <tr>
+              <td style="padding-bottom:20px; font-size: 32px;">
+                <%= @currency.name %>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding-bottom: 10px; font-size: 22px;">
+                <%= @channel_name %>
+              </td>
+            </tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td class="footer">
+					<table>
+						<tr>
+							<td>
+								This email was sent by <%= link_to t('application.root.name'), root_url %>.
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</body>
+</html>

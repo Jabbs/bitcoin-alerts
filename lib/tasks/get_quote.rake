@@ -7,6 +7,7 @@ namespace :bitcoin do
     CoinbaseService.sync_all_quotes
     BittrexService.sync_market_summaries
     SlackService.send_alerts
+    Channel.process_all
     # Scheme.process(Quote.recent_quotes)
     end_time = DateTime.now
     Rails.logger.info "Completed sync. #{begin_time.to_i - end_time.to_i} seconds"
