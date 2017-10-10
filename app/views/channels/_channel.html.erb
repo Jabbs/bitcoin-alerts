@@ -27,13 +27,9 @@
           <li>
             <i class="fa-li fa fa-bell" title="delivery method"></i>
             <span class="colon">:</span>
-            via email
+            via email (at most, once every <%= frequency_text(channel) %>)
           </li>
-          <li>
-            <i class="fa-li fa fa-blank" title="delivery method"></i>
-            <span class="colon" style="color: <%= channel.currency.color_hexidecimal %>;">:</span>
-            (at most, once every <%= frequency_text(channel) %>)
-          </li>
+
 
         </ul>
       </div>
