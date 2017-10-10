@@ -1,9 +1,11 @@
 <div class="container-fluid">
-  <div class="row">
-    <div class="col-md-12">
-      <h1 class="center">COMING SOON...</h1>
+  <% unless @channels.any? %>
+    <div class="row">
+      <div class="col-md-12">
+        <h1 class="center">COMING SOON...</h1>
+      </div>
     </div>
-  </div>
+  <% end %>
   <div class="row">
     <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12 col-centered">
       <div class="row">
