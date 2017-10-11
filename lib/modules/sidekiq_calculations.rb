@@ -2,7 +2,7 @@
 # https://github.com/jollygoodcode/jollygoodcode.github.io/issues/12
 class SidekiqCalculations
   DEFAULT_CLIENT_REDIS_SIZE  = 2
-  DEFAULT_SERVER_CONCURRENCY = 25
+  DEFAULT_SERVER_CONCURRENCY = 10
 
   def raise_error_for_env!
     return if !Rails.env.production?
