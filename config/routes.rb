@@ -1,3 +1,4 @@
+require 'sidekiq/web'
 Rails.application.routes.draw do
   resources :users do
     resources :verifications, only: [:show]
@@ -25,4 +26,5 @@ Rails.application.routes.draw do
   match '/password_reset',                  to: 'onboarding#password_reset', via: :get
   match '/privacy',                         to: 'static_pages#privacy', via: :get
   match '/terms',                           to: 'static_pages#terms', via: :get
+  mount Sidekiq::Web, at: '/sidekiq'
 end
