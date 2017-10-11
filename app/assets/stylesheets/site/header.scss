@@ -1,7 +1,8 @@
 .header {
-  background: #f2f7f9;
+  // background: #f2f7f9;
   // background: lighten($grey_light, 5%);
-  border-bottom: 1px solid $grey;
+  background: image-url("stripes.png");
+  // border-bottom: 1px solid $grey;
   height: 60px;
 
   #dropdownMenuLink {
@@ -53,6 +54,8 @@
     font-size: 22px;
     padding: 3px 15px;
     color: darken($yellow, 5%);
+    color: $grey_darkest;
+    font-weight: bold;
 
     &:hover {
       text-decoration: none;
@@ -62,7 +65,7 @@
   }
 
   .signup-btn {
-    border: 3px solid darken($yellow, 5%);
+    border: 3px solid $grey_darkest;
     @include circle_border;
   }
 
