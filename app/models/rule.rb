@@ -37,8 +37,9 @@ class Rule < ActiveRecord::Base
       self.percent_change_is_passing?
     elsif self.ceiling.present? || self.floor.present?
       false
+    else
+      false
     end
-    false
   end
 
   def percent_change_is_passing?
