@@ -1,13 +1,13 @@
 class NotificationMailer < ActionMailer::Base
-  default from: "#{I18n.t('application.root.name')} <no-reply@bitcoinalerts.com>"
+  default from: "#{I18n.t('application.root.name')} <no-reply@bitalertsnow.com>"
 
   def channel_alert_email(channel, user)
     @channel = channel
     @currency = channel.currency
     @user = user
     @channel_name = name_with_icons_replaced(@channel.name)
-    subject = @currency.name + " Alert: " + @channel_name
-    mail(to: "<#{user.email}>", subject: subject)
+    from = "#{@currency.name} Alert <no-reply@bitalertsnow.com>"
+    mail(to: "<#{user.email}>", from: from, subject: @channel_name)
   end
 
   private
