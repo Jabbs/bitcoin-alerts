@@ -6,7 +6,7 @@ class NotificationMailer < ActionMailer::Base
     @currency = channel.currency
     @user = user
     @channel_name = name_with_icons_replaced(@channel.name)
-    from = "#{@currency.name} Alert! <no-reply@bitalertsnow.com>"
+    from = "#{@currency.name} Alert <no-reply@bitalertsnow.com>"
     mail(to: "<#{user.email}>", from: from, subject: @currency.name + " " + @channel_name)
   end
 
