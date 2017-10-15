@@ -5,7 +5,7 @@ Rails.application.configure do
   config.middleware.use ExceptionNotification::Rack,
     :email => {
       :email_prefix => "[ERROR] ",
-      :sender_address => %{"STOCK ALERT" <bitcoinalerts@no-reply.com>},
+      :sender_address => %{"Bitcoin Alerts" <bitcoinalerts@no-reply.com>},
       :exception_recipients => %w{petejabbour1@gmail.com}
     }
 
