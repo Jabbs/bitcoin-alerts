@@ -22,5 +22,6 @@
 en:
   application:
     root:
+      domain: "www.bitalertnow.com"
       name: "Bitcoin Alerts"
       email: "info@bitalertnow.com"
