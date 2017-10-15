@@ -9,12 +9,12 @@
 			h3 { margin: 0px; }
 			table { border-spacing: 0; width: 100%; }
 			hr { border: none; border-top: solid 3px #ffffff; color: #ffffff; background-color: #ffffff; }
-			a { color: #253238; text-decoration: none; }
+			a { color: #ffffff; text-decoration: none; }
 			.big { font-size: 24px; font-weight: 400; line-height: 30px; }
 			.large { font-size: 18px; font-weight: 400; }
       .small { font-size: 14px; }
 			.signature { color: #868686; }
-			.outer-table { background: #ffffff; padding: 0px 20px 20px 20px; }
+			.outer-table { background: #ffffff; padding: 0px; }
 			.inner-table {
         text-align: left; background: <%= @currency.color_hexidecimal %>; margin: 5px 0 0 0; padding: 0px; max-width: 550px;
         -webkit-border-radius: 15px; -moz-border-radius: 15px; border-radius: 15px;
@@ -27,6 +27,7 @@
 			.bottom-summary { padding: 4px; background: #6681b3; }
 			.date { font-size: 0.9em; padding-left: 10px; }
 			.footer { color: #888888; font-size: 11px; font-weight: 400; padding: 5px 0px 0px 0px; line-height: 14px; }
+			.footer a { color: #253238; text-decoration: none; }
 			.btn { display: inline-block; border-radius: 8px; text-decoration: none; cursor: pointer; text-align: center;
 				padding: 12px 40px; font-size: 16px; font-weight: 400; color: #253238; background-color: #e0e0e0; border-color: #ccc;
 			}
@@ -53,7 +54,7 @@
             <tr>
               <td style="padding-bottom:20px;">
 								<div class="name">
-									<div class="name-inner"><%= @currency.name %></div>
+									<div class="name-inner"><%= @currency.symbol %></div>
 								</div>
 								<img src="https://s3.amazonaws.com/bitalertnow/currencies/<%= @currency.symbol %>.png" width="100" height="100" class="coin">
               </td>
@@ -71,7 +72,13 @@
 							</tr>
 							<tr>
 								<td style="padding-bottom: 10px; font-size: 62px;">
-									<%= @notification_message %>
+									<% if @channel.source_url.present? %>
+										<%= link_to @channel.source_url do %>
+											<%= @notification_message %>
+										<% end %>
+									<% else %>
+										<%= @notification_message %>
+									<% end %>
 								</td>
 							</tr>
 						<% end %>
