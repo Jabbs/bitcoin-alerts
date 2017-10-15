@@ -23,5 +23,6 @@ en:
   application:
     root:
       domain: "www.bitalertnow.com"
+      full_domain: "https://www.bitalertnow.com/"
       name: "Bitcoin Alerts"
       email: "info@bitalertnow.com"
