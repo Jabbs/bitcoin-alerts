@@ -1,4 +1,6 @@
 class UsersController < ApplicationController
+  before_action :signed_in_user, only: [:settings, :update]
+
   def create
     check_for_spam
     @user = User.new(user_params)
@@ -16,6 +18,19 @@ class UsersController < ApplicationController
     end
   end
 
+  def settings
+  end
+
+  def update
+    @user = User.find_by_id(params[:id])
+    subscribed_box_checked = params[:user][:subscribed].present? && params[:user][:subscribed] == "on"
+    if @user.update_attributes(user_params.merge("subscribed" => subscribed_box_checked))
+      redirect_to settings_path, notice: "Your account has been updated."
+    else
+      redirect_to settings_path, alert: "There was an issue updating your account. Please message #{t('application.root.email')} for assistance."
+    end
+  end
+
   private
 
   def check_for_spam
@@ -25,6 +40,6 @@ class UsersController < ApplicationController
   end
 
   def user_params
-    params.require(:user).permit(:email, :password, :password_confirmation)
+    params.require(:user).permit(:email, :password, :password_confirmation, :username, :subscribed)
   end
 end

@@ -1,0 +1,10 @@
+<div class="row top-margin-small">
+  <div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="form-check">
+      <label class="form-check-label">
+        <input type="checkbox" class="form-check-input" id="user_subscribed" name="user[subscribed]" <%= 'checked' if current_user.subscribed? %>>
+        Subscribed to email notifications
+      </label>
+    </div>
+  </div>
+</div>

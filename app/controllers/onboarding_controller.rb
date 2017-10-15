@@ -1,4 +1,6 @@
 class OnboardingController < ApplicationController
+  before_action :redirect_signed_in_user
+
   def login
   end
 

@@ -1,0 +1,9 @@
+<%= form_for user, :url => "/users/#{current_user.id}", html: { id: "update_user_form" }, method: :put do |f| %>
+  <label for="username">Username</label>
+	<%= render "users/forms/fields/username", input_class: "input-lg" %>
+  <label for="username">Email</label>
+  <%= render "users/forms/fields/email", input_class: "input-lg" %>
+	<%= render "users/forms/fields/subscribed", input_class: "input-lg" %>
+  <hr>
+	<%= f.button "Submit", data: { disable_with: "<i class='fa fa-circle-o-notch fa-spin'></i> Submitting..." }, class: "btn btn-lg btn-block bottom-margin-tiny" %>
+<% end %>

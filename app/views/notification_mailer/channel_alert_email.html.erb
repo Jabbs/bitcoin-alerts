@@ -85,6 +85,8 @@
 						<tr>
 							<td>
 								This email was sent by <%= link_to t('application.root.name'), root_url %>.
+								If you don't want to receive emails in the future
+								<%= link_to 'unsubscribe here', unsubscribe_url(unsubscribe_id: @user.auth_token) %>.
 							</td>
 						</tr>
 					</table>

@@ -14,9 +14,14 @@
                 <%= current_user.username %>
               </a>
               <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                <!-- <li><%= link_to "My Channels", channels_path, method: :delete, class: "dropdown-item" %></li>
-                <li><%= link_to "Settings", channels_path, method: :delete, class: "dropdown-item" %></li> -->
-                <li><%= link_to "Sign Out", logout_path, method: :delete, class: "dropdown-item" %></li>
+                <!--
+                <li><%= link_to "My Channels", channels_path, class: "dropdown-item" %></li>
+                <div class="divider"></div>
+                 -->
+                <li><%= link_to "Channels", root_path, class: "dropdown-item" %></li>
+                <li><%= link_to "Settings", settings_path, class: "dropdown-item" %></li>
+                <div class="divider"></div>
+                <li><%= link_to "Sign out", logout_path, method: :delete, class: "dropdown-item" %></li>
               </ul>
             </div>
           </div>

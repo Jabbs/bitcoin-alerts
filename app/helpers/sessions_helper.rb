@@ -25,6 +25,10 @@ module SessionsHelper
     redirect_to root_path unless current_user && current_user.admin?
   end
 
+  def redirect_signed_in_user
+    redirect_to root_path if current_user.present?
+  end
+
   def signed_in_user
     unless current_user
       store_location

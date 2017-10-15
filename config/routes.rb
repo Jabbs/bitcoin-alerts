@@ -20,6 +20,8 @@ Rails.application.routes.draw do
   resources :bittrex_market_summaries, only: [:index]
   resources :password_resets, only: [:new, :create, :edit, :update]
   resources :charts, only: [:index]
+  match '/settings',                        to: "users#settings", via: :get
+  match '/unsubscribe',                     to: "subscriptions#unsubscribe", via: :get
   match '/charts/:exchange/:currency_pair', to: "charts#show", via: :get
   match '/login',                           to: 'onboarding#login', via: :get
   match '/signup',                          to: 'onboarding#signup', via: :get
