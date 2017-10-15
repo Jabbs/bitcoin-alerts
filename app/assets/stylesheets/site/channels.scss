@@ -27,8 +27,8 @@
       font-size: 32px;
       color: $white;
       @include rounded_top_border;
-      padding: 20px 20px 10px 20px;
-      .name {
+      padding: 20px 20px 0px 20px;
+      .currency-name {
         display: inline-block;
         position: relative;
         top: -15px;
@@ -38,9 +38,13 @@
 
     .middle {
       color: $white;
-      padding: 0 20px 20px 20px;
-      min-height: 130px;
+      padding: 0 15px 20px 20px;
+      height: 130px;
       font-size: 26px;
+      .name {
+        overflow: hidden;
+        height: 110px;
+      }
     }
 
     .bottom {
@@ -90,6 +94,10 @@
 
     .middle {
       font-size: 32px;
+      height: auto;
+      .name {
+        height: auto;
+      }
     }
 
     .description {

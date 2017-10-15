@@ -1,7 +1,7 @@
 <div class="channel <%= 'channel-long' if version == 'long' %>">
   <div class="top" style="background: <%= channel.currency.color_hexidecimal %>;">
     <%= show_svg("#{channel.currency.symbol}.svg") %>
-    <div class="name">
+    <div class="currency-name">
       <%= channel.currency.name %>
       <% if version == 'long' && current_user.present? && current_user.admin? %>
         <%= link_to edit_channel_path(channel) do %>
@@ -11,7 +11,7 @@
     </div>
   </div>
   <div class="middle" style="background: <%= channel.currency.color_hexidecimal %>;">
-    <%= channel.name.html_safe %>
+    <div class="name"><%= channel.name.html_safe %></div>
     <% if version == 'long' %>
       <div class="description">
         <%= channel.description %>
@@ -27,7 +27,7 @@
           <li>
             <i class="fa-li fa fa-clock-o" title="frequency of alert logic"></i>
             <span class="colon">:</span>
-            checked every 1 minute
+            refreshed every 1 minute
           </li>
           <li>
             <i class="fa-li fa fa-bell" title="delivery method"></i>
