@@ -31,7 +31,7 @@ Rails.application.configure do
 
   # Set the default host option for mailer
   config.action_mailer.default_url_options = {
-    host: 'bitalertnow.com',
+    host: 'www.bitalertnow.com',
     protocol: 'https'
   }
 

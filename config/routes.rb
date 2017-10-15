@@ -1,7 +1,7 @@
 require 'sidekiq/web'
 Rails.application.routes.draw do
+  resources :verifications, only: [:show]
   resources :users do
-    resources :verifications, only: [:show]
     match '/resend_verification', to: "verifications#resend", via: :post
   end
   controller :sessions do
