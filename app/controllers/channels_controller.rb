@@ -1,5 +1,5 @@
 class ChannelsController < ApplicationController
-  before_action :redirect_non_admin, only: [:new, :create]
+  before_action :redirect_non_admin, only: [:new, :create, :edit, :update]
 
   def index
     @channels = Channel.all.shuffle.first(20)
@@ -21,6 +21,19 @@ class ChannelsController < ApplicationController
 
   def show_modal
     @channel = Channel.find_by_id(params[:channel_id])
+  end
+
+  def edit
+    @channel = Channel.find_by_id(params[:id])
+  end
+
+  def update
+    @channel = Channel.find_by_id(params[:id])
+    if @channel.update_attributes(channel_params)
+      redirect_to edit_channel_path(@channel), notice: "Channel has been updated."
+    else
+      redirect_to edit_channel_path(@channel), alert: "There was an issue updating this channel."
+    end
   end
 
   private

@@ -1,4 +1,4 @@
-<%= form_for channel, method: :post do |f| %>
+<%= form_for channel, method: channel.new_record? ? :post : :put do |f| %>
   <div class="row">
     <div class="col-md-12 col-sm-12 col-xs-12">
       <div class="form-group">
@@ -48,54 +48,11 @@
     </div>
   </div>
   <hr>
-  <h3>Rules:</h3>
-
-  <%= f.fields_for :rules do |ff| %>
-    <%= ff.hidden_field :operator, value: "or" %>
-    <% columns = [[:percent_increase, "Percent increase", nil],[:percent_decrease, "Percent decrease", nil],[:ceiling, "Ceiling", nil],[:floor, "Floor", nil],[:lookback_minutes, "Lookback minutes", nil]] %>
-    <% columns.each do |c| %>
-      <div class="row">
-        <div class="col-md-12 col-sm-12 col-xs-12">
-          <div class="form-group">
-            <label for="<%= c[0] %>"><%= c[1] %></label>
-            <%= ff.number_field c[0], class: "form-control", placeholder: c[1], value: c[2] %>
-          </div>
-        </div>
-      </div>
+  <% if channel.new_record? %>
+    <h3>Rules:</h3>
+    <%= f.fields_for :rules do |ff| %>
+      <%= render "rules/form_fields_for", f: ff %>
     <% end %>
-    <div class="row">
-      <div class="col-md-12 col-sm-12 col-xs-12">
-        <div class="form-group">
-          <label>Comparison table</label>
-          <%= ff.select :comparison_table, ["bittrex_market_summaries", "poloniex_quotes", "quotes"], {}, { style: "width:100%;", class: "form-control" } %>
-        </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-12 col-sm-12 col-xs-12">
-        <div class="form-group">
-          <label>Comparison table column</label>
-          <%= ff.select :comparison_table_column, ["last", "volume", "base_volume"], {}, { style: "width:100%;", class: "form-control" } %>
-        </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-12 col-sm-12 col-xs-12">
-        <div class="form-group">
-          <label>Comparison table scope method</label>
-          <%= ff.text_field :comparison_table_scope_method, class: "form-control", placeholder: "Comparison table scope method" %>
-        </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-12 col-sm-12 col-xs-12">
-        <div class="form-group">
-          <label>Comparison table scope value</label>
-          <%= ff.text_field :comparison_table_scope_value, class: "form-control", placeholder: "Comparison table scope value" %>
-        </div>
-      </div>
-    </div>
   <% end %>
-
-	<%= f.button "Create Channel", data: { disable_with: "<i class='fa fa-circle-o-notch fa-spin'></i> Submitting..." }, class: "btn btn-lg btn-block" %>
+	<%= f.button "#{channel.new_record? ? 'Create' : 'Update'} Channel", data: { disable_with: "<i class='fa fa-circle-o-notch fa-spin'></i> Submitting..." }, class: "btn btn-lg btn-block" %>
 <% end %>

@@ -9,6 +9,7 @@ Rails.application.routes.draw do
     delete 'logout' => :destroy
   end
   resources :channels do
+    resources :rules, only: [:edit, :update]
     resources :subscriptions
     post 'show_modal'
   end
