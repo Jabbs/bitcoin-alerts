@@ -32,6 +32,17 @@ class Rule < ActiveRecord::Base
     self.send(check_method, quote)
   end
 
+  def generate_message
+    if self.percent_increase.present? || self.percent_decrease.present?
+      comparison_value = self.comparison_value
+      comparison_value.present? ? "$" + comparison_value.round(2).to_s : ""
+    elsif self.ceiling.present? || self.floor.present?
+      ""
+    else
+      ""
+    end
+  end
+
   def is_passing?
     if self.percent_increase.present? || self.percent_decrease.present?
       self.percent_change_is_passing?
@@ -63,9 +74,9 @@ class Rule < ActiveRecord::Base
   def comparison_value
     if self.comparison_table_scope_method.present? && self.comparison_table_scope_value.present?
       self.comparison_class.where(self.comparison_table_scope_method => self.comparison_table_scope_value)
-        .where("created_at > ?", 3.minutes.ago).order(:id).try(:last).try(:send, self.comparison_table_column)
+        .where("created_at > ?", 5.minutes.ago).order(:id).try(:last).try(:send, self.comparison_table_column)
     else
-      self.comparison_class.where("created_at > ?", 3.minutes.ago).order(:id).try(:last).try(:send, self.comparison_table_column)
+      self.comparison_class.where("created_at > ?", 5.minutes.ago).order(:id).try(:last).try(:send, self.comparison_table_column)
     end
   end
 
