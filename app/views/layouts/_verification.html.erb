@@ -1,0 +1,7 @@
+<% if current_user.present? && !current_user.verified? %>
+  <div class="alert alert-info" role="alert">
+    An email has been sent to <%= current_user.email %>.
+  	Please confirm your email address to begin receiving notifications.
+    <%= link_to 'Resend email verification', user_resend_verification_url(current_user), disable_with: 'Sending...', class: "btn btn-default btn-small", method: :post %>
+  </div>
+<% end %>

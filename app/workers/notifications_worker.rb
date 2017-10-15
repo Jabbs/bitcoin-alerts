@@ -8,7 +8,7 @@ class NotificationsWorker
     unless channel.has_sent_notifications_within_frequency_limit?
       User.where(id: channel.subscriptions.pluck(:user_id)).each do |user|
         channel.channel_notifications.create!(user: user)
-        NotificationMailer.channel_alert_email(channel, user).deliver_now
+        NotificationMailer.channel_alert_email(channel, user).deliver_now if user.subscribed?
       end
     end
   end
