@@ -7,6 +7,16 @@ class BittrexMarketSummary < ActiveRecord::Base
 
   SELECTED_MARKETS = ["BTC-DOGE", "BTC-LTC", "BTC-VTC", "BTC-RDD", "BTC-NXT", "BTC-DASH", "BTC-GRS", "BTC-ERC", "BTC-XMR", "BTC-CLOAK", "BTC-START", "BTC-KORE", "BTC-IOC", "BTC-SYS", "BTC-NEOS", "BTC-DGB", "BTC-BTS", "BTC-XRP", "BTC-GAME", "BTC-XEM", "BTC-CLAM", "BTC-DMD", "BTC-OK", "BTC-SNRG", "BTC-ETH", "USDT-BTC", "BTC-FCT", "BTC-MAID", "BTC-DCR", "BTC-XVG", "BTC-PIVX", "BTC-STEEM", "ETH-DGD", "BTC-WAVES", "BTC-RISE", "BTC-LBC", "BTC-ETC", "ETH-ETC", "BTC-STRAT", "BTC-TRIG", "BTC-REP", "BTC-ARDR", "BTC-NEO", "BTC-ZEC", "BTC-UBQ", "BTC-KMD", "BTC-GNT", "ETH-GNT", "ETH-REP", "USDT-ETH", "ETH-GNO", "ETH-BAT", "BTC-BAT", "ETH-LTC", "ETH-XRP", "BTC-MCO", "ETH-MCO", "ETH-DASH", "ETH-ZEC", "USDT-ZEC", "USDT-LTC", "USDT-ETC", "USDT-XRP", "BTC-OMG", "ETH-OMG", "ETH-XMR", "ETH-XEM", "ETH-NEO", "USDT-XMR", "USDT-DASH", "ETH-BCC", "USDT-BCC", "BTC-BCC", "USDT-NEO", "ETH-WAVES", "ETH-STRAT", "ETH-DGB", "ETH-BTS", "ETH-FCT", "USDT-OMG"]
 
+  def self.print_daily_avgs(days=50, market_name="USDT-BTC")
+    ActiveRecord::Base.logger.level = 1
+    date = BittrexMarketSummary.first.created_at
+    days.times do
+      avg = BittrexMarketSummary.where(market_name: market_name).where("created_at > ?", date.beginning_of_day).where("created_at < ?", date.end_of_day).average(:last)
+      puts avg.round(2).to_s + " " + date.strftime("%m/%d/%y")
+      date = date + 1.day
+    end
+  end
+
   def recent_btc_price
     BittrexMarketSummary.where(market_name: "USDT-BTC").where("created_at < ?", self.created_at).where("created_at > ?", self.created_at - 2.minutes).first.try(:last)
   end
@@ -22,5 +32,4 @@ class BittrexMarketSummary < ActiveRecord::Base
   def percent_change(minutes_ago)
     Numbers.percent_change(self.last, self.running_price_average(minutes_ago))
   end
-
 end
