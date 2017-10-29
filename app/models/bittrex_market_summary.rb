@@ -10,10 +10,14 @@ class BittrexMarketSummary < ActiveRecord::Base
   def self.print_daily_avgs(days=50, market_name="USDT-BTC")
     ActiveRecord::Base.logger.level = 1
     date = BittrexMarketSummary.first.created_at
+    last_avg = nil
+    percent_change = ""
     days.times do
       avg = BittrexMarketSummary.where(market_name: market_name).where("created_at > ?", date.beginning_of_day).where("created_at < ?", date.end_of_day).average(:last)
-      puts avg.round(2).to_s + " " + date.strftime("%m/%d/%y")
+      percent_change = Numbers.percent_change(avg, last_avg).round(1).to_s if last_avg
+      puts avg.round(2).to_s + " (#{percent_change}%)" + " " + date.strftime("%m/%d/%y")
       date = date + 1.day
+      last_avg = avg
     end
   end
 
