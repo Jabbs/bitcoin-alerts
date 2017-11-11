@@ -2,7 +2,7 @@ class ChannelsController < ApplicationController
   before_action :redirect_non_admin, only: [:new, :create, :edit, :update]
 
   def index
-    @channels = Channel.all.shuffle.first(20)
+    @channels = Channel.where(active: true).shuffle.first(20)
   end
 
   def new
