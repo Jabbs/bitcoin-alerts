@@ -27,12 +27,15 @@
           <li>
             <i class="fa-li fa fa-clock-o" title="frequency of alert logic"></i>
             <span class="colon">:</span>
-            refreshed every 1 minute
+            refreshed every minute
           </li>
           <li>
             <i class="fa-li fa fa-bell" title="delivery method"></i>
             <span class="colon">:</span>
-            via email (at most, once every <%= frequency_text(channel) %>)
+            via email
+            <% if channel.continuous_frequency? %>
+              (at most, once every <%= frequency_text(channel) %>)
+            <% end %>
           </li>
         </ul>
       </div>

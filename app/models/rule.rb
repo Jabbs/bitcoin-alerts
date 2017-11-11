@@ -47,9 +47,17 @@ class Rule < ActiveRecord::Base
     if self.percent_increase.present? || self.percent_decrease.present?
       self.percent_change_is_passing?
     elsif self.ceiling.present? || self.floor.present?
-      false
+      self.ceiling_or_floor_is_passing?
     else
       false
+    end
+  end
+
+  def ceiling_or_floor_is_passing?
+    if self.ceiling.present?
+      self.comparison_value > self.ceiling
+    elsif self.floor.present?
+      self.comparison_value < self.floor
     end
   end
 

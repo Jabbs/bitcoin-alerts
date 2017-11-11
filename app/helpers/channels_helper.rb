@@ -7,5 +7,4 @@ module ChannelsHelper
       pluralize(channel.frequency_in_minutes, "minute")
     end
   end
-
 end

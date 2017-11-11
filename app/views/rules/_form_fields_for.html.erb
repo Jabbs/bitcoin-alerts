@@ -1,25 +1,23 @@
 <%= f.hidden_field :operator, value: "or" %>
 <% columns = [[:percent_increase, "Percent increase", f.object.try(:percent_increase)],[:percent_decrease, "Percent decrease", f.object.try(:percent_decrease)],[:ceiling, "Ceiling", f.object.try(:ceiling)],[:floor, "Floor", f.object.try(:floor)],[:lookback_minutes, "Lookback minutes", f.object.try(:lookback_minutes)]] %>
-<% columns.each do |c| %>
-  <div class="row">
-    <div class="col-md-12 col-sm-12 col-xs-12">
+<div class="row">
+  <% columns.each do |c| %>
+    <div class="col-md-6 col-sm-6 col-xs-6">
       <div class="form-group">
         <label for="<%= c[0] %>"><%= c[1] %></label>
         <%= f.number_field c[0], class: "form-control", placeholder: c[1], value: c[2] %>
       </div>
     </div>
-  </div>
-<% end %>
+  <% end %>
+</div>
 <div class="row">
-  <div class="col-md-12 col-sm-12 col-xs-12">
+  <div class="col-md-6 col-sm-6 col-xs-6">
     <div class="form-group">
       <label>Comparison table</label>
       <%= f.select :comparison_table, ["bittrex_market_summaries", "poloniex_quotes", "quotes"], {}, { style: "width:100%;", class: "form-control" } %>
     </div>
   </div>
-</div>
-<div class="row">
-  <div class="col-md-12 col-sm-12 col-xs-12">
+  <div class="col-md-6 col-sm-6 col-xs-6">
     <div class="form-group">
       <label>Comparison table column</label>
       <%= f.select :comparison_table_column, ["last", "volume", "base_volume"], {}, { style: "width:100%;", class: "form-control" } %>
@@ -27,18 +25,16 @@
   </div>
 </div>
 <div class="row">
-  <div class="col-md-12 col-sm-12 col-xs-12">
+  <div class="col-md-6 col-sm-6 col-xs-6">
     <div class="form-group">
       <label>Comparison table scope method</label>
-      <%= f.text_field :comparison_table_scope_method, class: "form-control", placeholder: "Comparison table scope method (ex: market_name)" %>
+      <%= f.text_field :comparison_table_scope_method, class: "form-control", placeholder: "ex: market_name" %>
     </div>
   </div>
-</div>
-<div class="row">
-  <div class="col-md-12 col-sm-12 col-xs-12">
+  <div class="col-md-6 col-sm-6 col-xs-6">
     <div class="form-group">
       <label>Comparison table scope value</label>
-      <%= f.text_field :comparison_table_scope_value, class: "form-control", placeholder: "Comparison table scope value (ex: USDT-ETH)" %>
+      <%= f.text_field :comparison_table_scope_value, class: "form-control", placeholder: "ex: USDT-ETH" %>
     </div>
   </div>
 </div>

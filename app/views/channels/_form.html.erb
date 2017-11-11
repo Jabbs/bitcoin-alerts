@@ -40,10 +40,16 @@
     </div>
   </div>
   <div class="row">
-    <div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="col-md-6 col-sm-6 col-xs-6">
       <div class="form-group">
         <label for="frequency_in_minutes">Frequency of alert (in minutes)</label>
         <%= f.number_field :frequency_in_minutes, class: "form-control", placeholder: "Frequency of alert (in minutes)" %>
+      </div>
+    </div>
+    <div class="col-md-6 col-sm-6 col-xs-6">
+      <div class="form-group">
+        <label for="frequency_in_minutes">Frequency type</label>
+        <%= f.select :frequency_type, Channel::FREQUENCY_TYPES, {}, {style: "width:100%;", class: "form-control"} %>
       </div>
     </div>
   </div>

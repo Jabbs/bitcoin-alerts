@@ -8,6 +8,8 @@ class Channel < ActiveRecord::Base
 
   accepts_nested_attributes_for :rules, allow_destroy: true
 
+  FREQUENCY_TYPES = ["continuous", "one-time"]
+
   def self.process_all
     Channel.where(active: true).each do |channel|
       channel.process
@@ -25,6 +27,21 @@ class Channel < ActiveRecord::Base
       next if is_passing
       is_passing = rule.is_passing?
     end
-    NotificationsWorker.perform_async(self.id) if is_passing
+    if is_passing
+      NotificationsWorker.perform_async(self.id)
+      self.deactivate if self.one_time_frequency?
+    end
+  end
+
+  def deactivate
+    self.update_column(:active, false)
+  end
+
+  def one_time_frequency?
+    self.frequency_type == "one-time"
+  end
+
+  def continuous_frequency?
+    self.frequency_type == "continuous"
   end
 end

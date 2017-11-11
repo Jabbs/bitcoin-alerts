@@ -39,7 +39,7 @@ class ChannelsController < ApplicationController
   private
 
   def channel_params
-    params.require(:channel).permit(:name, :description, :currency_id, :source_name, :source_url, :frequency_in_minutes,
+    params.require(:channel).permit(:name, :description, :currency_id, :source_name, :source_url, :frequency_in_minutes, :frequency_type,
                     rules_attributes: [:id, :percent_increase, :percent_decrease, :ceiling, :floor, :operator,
                                        :comparison_logic, :lookback_minutes, :comparison_table, :comparison_table_column,
                                        :comparison_table_scope_method, :comparison_table_scope_value])

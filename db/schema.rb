@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171015175944) do
+ActiveRecord::Schema.define(version: 20171111215655) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -52,14 +52,15 @@ ActiveRecord::Schema.define(version: 20171015175944) do
 
   create_table "channels", force: :cascade do |t|
     t.string   "name"
-    t.datetime "created_at",                          null: false
-    t.datetime "updated_at",                          null: false
+    t.datetime "created_at",                                  null: false
+    t.datetime "updated_at",                                  null: false
     t.integer  "currency_id"
     t.text     "description"
     t.text     "source_url"
     t.string   "source_name"
     t.integer  "frequency_in_minutes"
     t.boolean  "active",               default: true
+    t.string   "frequency_type",       default: "continuous"
   end
 
   add_index "channels", ["currency_id"], name: "index_channels_on_currency_id", using: :btree
