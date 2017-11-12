@@ -13,6 +13,7 @@ Rails.application.routes.draw do
     resources :subscriptions
     post 'show_modal'
   end
+  resources :currencies, only: [:index]
   root 'channels#index'
   resources :quotes, only: [:index]
   resources :trades, only: [:index]

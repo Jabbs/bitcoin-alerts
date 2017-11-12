@@ -1,8 +1,34 @@
-<div class="container-fluid">
+<div class="container-fluid body">
+  <div class="row hidden-sm hidden-xs">
+    <div class="col-lg-10 col-md-12 col-sm-12 col-xs-12 col-centered">
+      <div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+          <div class="no-height">
+            <%= form_tag channels_path, class: "search-form", method: :get do %>
+              <input class="typeahead form-control input-lg" type="text" data-provide="typeahead" autocomplete="off" placeholder="Search" name="search_value" value="<%= params[:search_value] %>">
+              <div class="search-icon-container">
+                <i class="fa fa-2x fa-search"></i>
+              </div>
+              <%= button_tag "Apply filters", class: "btn", data: { disable_with: "Submitting..." }, name: "search", value: "true", style: "display: none;" %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
   <% unless @channels.any? %>
     <div class="row">
       <div class="col-md-12">
-        <h1 class="center">COMING SOON...</h1>
+        <div class="center">
+          <p>
+            <% if params[:search_value] %>
+              We could not find anything matching "<%= params[:search_value] %>."
+            <% else %>
+              No matches found.
+            <% end %>
+          </p>
+          <p><%= link_to "Return Home", root_path %></p>
+        </div>
       </div>
     </div>
   <% end %>
@@ -19,5 +45,6 @@
   </div>
 </div>
 
+<%= render "layouts/footer" %>
 <div id="channel-modal-container">
 </div>

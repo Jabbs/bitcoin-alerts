@@ -1,0 +1,21 @@
+<footer>
+  <div class="container-fluid">
+    <div class="currency-picker">
+      <div class="row">
+        <div class="col-lg-10 col-md-12 col-sm-12 col-xs-12 col-centered">
+          <div class="row">
+            <div class="col-md-12">
+              <% Currency.with_bittrex_data.each do |currency| %>
+                <%= link_to channels_path(search_value: currency.name) do %>
+                  <div class="currency" data-hexidecimal="<%= currency.color_hexidecimal %>" title="<%= currency.name %>">
+                    <%= show_svg("#{currency.symbol}.svg") %>
+                  </div>
+                <% end %>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>

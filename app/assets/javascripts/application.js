@@ -16,6 +16,7 @@
 //= require bootstrap.min
 //= require bootstrap-switch.min
 //= require bootstrap-slider.min
+//= require bootstrap-3-typeahead.min
 //= require chart
 //= require Chart.min
 //= require gmaps/google
@@ -24,6 +25,28 @@
 
 $(function() {
 
+  $(".currency-picker svg").mouseover(function(e) {
+    var hexidecimal = $(this).parent().attr("data-hexidecimal");
+    $(this).find("path").css({ fill: hexidecimal });
+  });
 
+  $(".currency-picker svg").mouseleave(function(e) {
+    $(this).find("path").css({ fill: "white" });
+  });
+
+  $.get("currencies.json", function(data) {
+    $(".typeahead").typeahead({ source: data });
+  },'json');
+
+  var searchReplacing = false;
+  $(".typeahead").change(function(e) {
+    var current = $(".typeahead").typeahead("getActive");
+    if (current && current.name == $(".typeahead").val() && !searchReplacing) {
+      searchReplacing = true;
+      $(".typeahead").prop('disabled', true);
+      $(".search-icon-container").append("<i class='fa fa-2x fa-spinner fa-pulse'></i>");
+      location.replace('/channels?search_value=' + current.name);
+    }
+  });
 
 });

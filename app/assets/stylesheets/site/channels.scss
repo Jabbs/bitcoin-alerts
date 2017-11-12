@@ -1,14 +1,40 @@
 #page-channels-index {
-  // background: image-url("stripes.png");
-  padding: 30px 15px;
-  min-height: 900px;
-  // background: #F5F5F5;
+  .container-fluid.body {
+    padding: 30px 15px;
+    min-height: 600px;
+
+    p {
+      font-size: 18px;
+    }
+  }
 
   .close {
     position: absolute;
     z-index: 20000;
     top: 0px;
     right: 10px;
+  }
+
+  .search-form {
+    position: relative;
+    top: -83px;
+    .search-icon-container {
+      height: 0px;
+      color: $grey_dark;
+      position: relative;
+      top: -38px;
+      left: 15px;
+      .fa-spinner {
+        position: relative;
+        left: 83%;
+      }
+    }
+    input {
+      padding-left: 50px;
+    }
+    .dropdown-menu {
+      width: 100%;
+    }
   }
 
   .sort-link {

@@ -16,6 +16,17 @@ class Channel < ActiveRecord::Base
     end
   end
 
+  def self.text_search(query)
+    currency_id = Currency.where("name @@ :q", q: query).try(:first).try(:id)
+    if query.present? && currency_id.present?
+      self.where(currency_id: currency_id)
+    elsif query.present?
+      self.where("name @@ :q or description @@ :q", q: query)
+    else
+      self.all
+    end
+  end
+
   def has_sent_notifications_within_frequency_limit?
     return false unless self.frequency_in_minutes.present?
     self.channel_notifications.where("created_at > ?", DateTime.now - self.frequency_in_minutes.minutes).any?

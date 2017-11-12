@@ -2,7 +2,15 @@ class ChannelsController < ApplicationController
   before_action :redirect_non_admin, only: [:new, :create, :edit, :update]
 
   def index
-    @channels = Channel.where(active: true).shuffle.first(20)
+    if params[:search_value]
+      @channels = Channel.text_search(params[:search_value]).where(active: true)
+    else
+      @channels = Channel.where(active: true).shuffle.first(20)
+    end
+  end
+
+  def currencies
+
   end
 
   def new

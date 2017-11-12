@@ -1,0 +1,21 @@
+footer {
+  background: $grey_dark;
+  padding-top: 60px;
+  padding-bottom: 60px;
+  .currency-picker {
+    .currency {
+      display: inline-block;
+      &:hover {
+        cursor: pointer;
+      }
+    }
+    svg {
+      height: 50px;
+      width: 50px;
+    }
+
+    svg path {
+      fill: white;
+    }
+  }
+}
