@@ -1,17 +1,9 @@
 <div class="container-fluid body">
-  <div class="row hidden-sm hidden-xs">
+  <div class="row">
     <div class="col-lg-10 col-md-12 col-sm-12 col-xs-12 col-centered">
       <div class="row">
         <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-          <div class="no-height">
-            <%= form_tag channels_path, class: "search-form", method: :get do %>
-              <input class="typeahead form-control input-lg" type="text" data-provide="typeahead" autocomplete="off" placeholder="Search" name="search_value" value="<%= params[:search_value] %>">
-              <div class="search-icon-container">
-                <i class="fa fa-2x fa-search"></i>
-              </div>
-              <%= button_tag "Apply filters", class: "btn", data: { disable_with: "Submitting..." }, name: "search", value: "true", style: "display: none;" %>
-            <% end %>
-          </div>
+          <%= render "channels/search_form" %>
         </div>
       </div>
     </div>
@@ -40,6 +32,13 @@
             <%= render "channels/link_channel", channel: channel %>
           </div>
         <% end %>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-10 col-md-12 col-sm-12 col-xs-12 col-centered">
+      <div class="center">
+        <%= will_paginate @channels, renderer: BootstrapPagination::Rails %>
       </div>
     </div>
   </div>

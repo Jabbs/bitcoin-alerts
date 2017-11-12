@@ -16,6 +16,11 @@
     .container-fluid.body {
       padding: 30px;
     }
+    .search-form-container {
+      height: auto;
+      margin-bottom: 30px;
+      .search-form { top: 0px; }
+    }
   }
 }
 
@@ -24,6 +29,12 @@
   #page-channels-index {
     .container-fluid.body {
       padding: 30px;
+    }
+
+    .search-form-container {
+      height: auto;
+      margin-bottom: 30px;
+      .search-form { top: 0px; }
     }
   }
 }

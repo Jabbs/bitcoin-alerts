@@ -3,9 +3,9 @@ class ChannelsController < ApplicationController
 
   def index
     if params[:search_value]
-      @channels = Channel.text_search(params[:search_value]).where(active: true)
+      @channels = Channel.text_search(params[:search_value]).where(active: true).paginate(:page => params[:page], :per_page => 9)
     else
-      @channels = Channel.where(active: true).shuffle.first(20)
+      @channels = Channel.where(active: true).paginate(:page => params[:page], :per_page => 9)
     end
   end
 
@@ -48,7 +48,7 @@ class ChannelsController < ApplicationController
 
   def channel_params
     params.require(:channel).permit(:name, :description, :currency_id, :source_name, :source_url, :frequency_in_minutes, :frequency_type,
-                    rules_attributes: [:id, :percent_increase, :percent_decrease, :ceiling, :floor, :operator,
+                    rules_attributes: [:id, :percent_increase, :percent_decrease, :ceiling, :floor, :operator, :custom_function,
                                        :comparison_logic, :lookback_minutes, :comparison_table, :comparison_table_column,
                                        :comparison_table_scope_method, :comparison_table_scope_value])
   end

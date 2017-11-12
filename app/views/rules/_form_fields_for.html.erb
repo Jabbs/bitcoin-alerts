@@ -1,3 +1,12 @@
+<div class="row">
+  <div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="form-group">
+      <label>Comparison table</label>
+      <%= f.select :custom_function, options_for_select(Rule::CUSTOM_FUNCTIONS, f.object.try(:custom_function)), {}, { style: "width:100%;", class: "form-control" } %>
+    </div>
+  </div>
+</div>
+
 <%= f.hidden_field :operator, value: "or" %>
 <% columns = [[:percent_increase, "Percent increase", f.object.try(:percent_increase)],[:percent_decrease, "Percent decrease", f.object.try(:percent_decrease)],[:ceiling, "Ceiling", f.object.try(:ceiling)],[:floor, "Floor", f.object.try(:floor)],[:lookback_minutes, "Lookback minutes", f.object.try(:lookback_minutes)]] %>
 <div class="row">
@@ -14,13 +23,13 @@
   <div class="col-md-6 col-sm-6 col-xs-6">
     <div class="form-group">
       <label>Comparison table</label>
-      <%= f.select :comparison_table, ["bittrex_market_summaries", "poloniex_quotes", "quotes"], {}, { style: "width:100%;", class: "form-control" } %>
+      <%= f.select :comparison_table, options_for_select(["bittrex_market_summaries", "poloniex_quotes", "quotes"], f.object.try(:comparison_table)), {}, { style: "width:100%;", class: "form-control" } %>
     </div>
   </div>
   <div class="col-md-6 col-sm-6 col-xs-6">
     <div class="form-group">
       <label>Comparison table column</label>
-      <%= f.select :comparison_table_column, ["last", "volume", "base_volume"], {}, { style: "width:100%;", class: "form-control" } %>
+      <%= f.select :comparison_table_column, options_for_select(["last", "volume", "base_volume"], f.object.try(:comparison_table_column)), {}, { style: "width:100%;", class: "form-control" } %>
     </div>
   </div>
 </div>

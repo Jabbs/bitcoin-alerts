@@ -1,0 +1,9 @@
+<div class="search-form-container">
+  <%= form_tag channels_path, class: "search-form", method: :get do %>
+    <input class="typeahead form-control input-lg" type="text" data-provide="typeahead" required autocomplete="off" placeholder="Search" name="search_value" value="<%= params[:search_value] %>">
+    <div class="search-icon-container">
+      <i class="fa fa-2x fa-search"></i>
+    </div>
+    <%= button_tag "Apply filters", class: "btn", data: { disable_with: "Submitting..." }, name: "search", value: "true", style: "display: none;" %>
+  <% end %>
+</div>

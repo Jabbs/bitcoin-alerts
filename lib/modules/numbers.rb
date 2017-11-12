@@ -32,11 +32,12 @@ module Numbers
       quantized_amt = ("1" + ("0" * (right_of_zero.length - 1))).to_f
       step = dir == "up" ? 1 : 0
       r = (right_of_zero.first(1).to_i + step) * quantized_amt
-      w = r - (quantized_amt / 2).to_f
+      w1 = r - (quantized_amt / 2).to_f
+      w2 = r + (quantized_amt / 2).to_f
       if dir == "up"
-        o = w > right_of_zero.to_f ? w : r
+        o = [r,w1,w2].sort.find { |x| x > right_of_zero.to_f }
       else
-        o = r < right_of_zero.to_f ? r : w
+        o = [r,w1,w2].sort.reverse.find { |x| x < right_of_zero.to_f }
       end
       output = ("0." + ("0" * leading_zeros) + o.to_s.sub(".", "")).to_f
     elsif left_of_zero.length == 1
@@ -49,11 +50,12 @@ module Numbers
       quantized_amt = ("1" + ("0" * (left_of_zero.length - 1))).to_f
       step = dir == "up" ? 1 : 0
       r = (left_of_zero.first(1).to_i + step) * quantized_amt
-      w = r - (quantized_amt / 2).to_f
+      w1 = r - (quantized_amt / 2).to_f
+      w2 = r + (quantized_amt / 2).to_f
       if dir == "up"
-        output = w > amount ? w : r
+        output = [r,w1,w2].sort.find { |x| x > amount }
       else
-        output = r < amount ? r : w
+        output = [r,w1,w2].sort.reverse.find { |x| x < amount }
       end
     end
     output

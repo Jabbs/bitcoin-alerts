@@ -12,6 +12,11 @@ class Rule < ActiveRecord::Base
     "no_recent_quote_with_same_strategy"
   ]
 
+  CUSTOM_FUNCTIONS = [
+    "passed_meaningful_barrier_ceiling?",
+    "passed_meaningful_barrier_floor?"
+  ]
+
   def print_description
     text = " - "
     if self.comparison_logic == "most_recent_quote" || self.comparison_logic == "quote_running_average"
@@ -33,18 +38,34 @@ class Rule < ActiveRecord::Base
   end
 
   def generate_message
-    if self.percent_increase.present? || self.percent_decrease.present?
+    if self.custom_function.present? && self.custom_function == "passed_meaningful_barrier_ceiling?"
+      ceiling = Numbers.next_meaningful_amount(self.comparison_value_ten_minutes_ago, "up")
+      ceiling.present? ? "$" + ceiling.to_s : ""
+    elsif self.custom_function.present? && self.custom_function == "passed_meaningful_barrier_floor?"
+      floor = Numbers.next_meaningful_amount(self.comparison_value_ten_minutes_ago, "down")
+      floor.present? ? "$" + floor.to_s : ""
+    elsif self.percent_increase.present? || self.percent_decrease.present? || self.ceiling.present? || self.floor.present?
       comparison_value = self.comparison_value
-      comparison_value.present? ? "$" + comparison_value.round(2).to_s : ""
-    elsif self.ceiling.present? || self.floor.present?
-      ""
+      comparison_value.present? ? "$" + comparison_value.to_s : ""
     else
       ""
     end
   end
 
+  def passed_meaningful_barrier_ceiling?
+    ceiling = Numbers.next_meaningful_amount(self.comparison_value_ten_minutes_ago, "up")
+    self.comparison_value > ceiling
+  end
+
+  def passed_meaningful_barrier_floor?
+    floor = Numbers.next_meaningful_amount(self.comparison_value_ten_minutes_ago, "down")
+    self.comparison_value < floor
+  end
+
   def is_passing?
-    if self.percent_increase.present? || self.percent_decrease.present?
+    if self.custom_function.present?
+      self.send(self.custom_function)
+    elsif self.percent_increase.present? || self.percent_decrease.present?
       self.percent_change_is_passing?
     elsif self.ceiling.present? || self.floor.present?
       self.ceiling_or_floor_is_passing?
@@ -85,6 +106,18 @@ class Rule < ActiveRecord::Base
         .where("created_at > ?", 5.minutes.ago).order(:id).try(:last).try(:send, self.comparison_table_column)
     else
       self.comparison_class.where("created_at > ?", 5.minutes.ago).order(:id).try(:last).try(:send, self.comparison_table_column)
+    end
+  end
+
+  def comparison_value_ten_minutes_ago
+    if self.comparison_table_scope_method.present? && self.comparison_table_scope_value.present?
+      self.comparison_class.where(self.comparison_table_scope_method => self.comparison_table_scope_value)
+        .where("created_at > ?", 15.minutes.ago).where("created_at < ?", 10.minutes.ago)
+        .order(:id).try(:last).try(:send, self.comparison_table_column)
+    else
+      self.comparison_class
+        .where("created_at > ?", 15.minutes.ago).where("created_at < ?", 10.minutes.ago)
+        .order(:id).try(:last).try(:send, self.comparison_table_column)
     end
   end
 

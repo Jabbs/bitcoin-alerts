@@ -36,6 +36,7 @@ $(function() {
 
   $.get("currencies.json", function(data) {
     $(".typeahead").typeahead({ source: data });
+    $(".typeahead").focus();
   },'json');
 
   var searchReplacing = false;

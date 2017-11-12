@@ -19,7 +19,7 @@ class RulesController < ApplicationController
   private
 
   def rule_params
-    params.require(:rule).permit(:percent_increase, :percent_decrease, :ceiling, :floor, :operator,
+    params.require(:rule).permit(:percent_increase, :percent_decrease, :ceiling, :floor, :operator, :custom_function,
                                  :comparison_logic, :lookback_minutes, :comparison_table, :comparison_table_column,
                                  :comparison_table_scope_method, :comparison_table_scope_value)
   end

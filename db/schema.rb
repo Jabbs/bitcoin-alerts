@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171111215655) do
+ActiveRecord::Schema.define(version: 20171112173341) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -191,6 +191,7 @@ ActiveRecord::Schema.define(version: 20171111215655) do
     t.string   "comparison_table_column"
     t.string   "comparison_table_scope_method"
     t.string   "comparison_table_scope_value"
+    t.string   "custom_function"
   end
 
   add_index "rules", ["channel_id"], name: "index_rules_on_channel_id", using: :btree
