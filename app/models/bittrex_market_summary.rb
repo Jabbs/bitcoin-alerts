@@ -24,9 +24,10 @@ class BittrexMarketSummary < ActiveRecord::Base
   def self.daily_info(date, lookback_days=7, market_name="USDT-BTC")
     ActiveRecord::Base.logger.level = 1
     data = []
+    date = date - (lookback_days - 1).days
     lookback_days.times do
-      yesterdays_bms = BittrexMarketSummary.where(market_name: market_name).where("created_at < ?", date.beginning_of_day.yesterday + 5.minutes).where("created_at > ?", date.beginning_of_day.yesterday).order(:id).first
-      todays_bms = BittrexMarketSummary.where(market_name: market_name).where("created_at < ?", date.beginning_of_day + 5.minutes).where("created_at > ?", date.beginning_of_day).order(:id).first
+      yesterdays_bms = BittrexMarketSummary.where(market_name: market_name).where("created_at < ?", date.beginning_of_day.yesterday + 10.minutes).where("created_at > ?", date.beginning_of_day.yesterday).order(:id).first
+      todays_bms = BittrexMarketSummary.where(market_name: market_name).where("created_at < ?", date.beginning_of_day + 10.minutes).where("created_at > ?", date.beginning_of_day).order(:id).first
       info = {}
       info[:date] = date.yesterday.to_date
       info[:open] = yesterdays_bms.try(:last)
