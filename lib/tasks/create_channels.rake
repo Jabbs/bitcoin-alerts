@@ -43,9 +43,9 @@ namespace :bitcoin do
       next unless last_amount.present?
 
       next_ceiling = Numbers.next_meaningful_amount(last_amount, "up")
-      name = "price surpasses the latest resistance level of $#{remove_trailing_zero(next_ceiling)}"
+      name = "price surpasses the latest resistance level of #{Numbers.format_number_to_str_decimal(next_ceiling)} #{currency.paired_symbol}"
       unless Channel.where(active: true).find_by_name(name)
-        description = "Get notified when the price of #{currency.name} surpasses the latest resistance level of $#{remove_trailing_zero(next_ceiling)}."
+        description = "Get notified when the price of #{currency.name} surpasses the latest resistance level of #{Numbers.format_number_to_str_decimal(next_ceiling)} #{currency.paired_symbol}."
         source_url = "https://bittrex.com/Market/Index?MarketName=" + currency.selected_market_name
         source_name = "Bittrex"
         frequency_in_minutes = 120
@@ -63,9 +63,9 @@ namespace :bitcoin do
       end
 
       next_floor = Numbers.next_meaningful_amount(last_amount, "down")
-      name = "price falls below the latest support level of $#{remove_trailing_zero(next_floor)}"
+      name = "price falls below the latest support level of #{Numbers.format_number_to_str_decimal(next_floor)} #{currency.paired_symbol}"
       unless Channel.where(active: true).find_by_name(name)
-        description = "Get notified when the price of #{currency.name} falls below the latest support level of $#{remove_trailing_zero(next_floor)}."
+        description = "Get notified when the price of #{currency.name} falls below the latest support level of #{Numbers.format_number_to_str_decimal(next_floor)} #{currency.paired_symbol}."
         source_url = "https://bittrex.com/Market/Index?MarketName=" + currency.selected_market_name
         source_name = "Bittrex"
         frequency_in_minutes = 120
@@ -83,11 +83,6 @@ namespace :bitcoin do
       end
 
     end
-  end
-
-  def remove_trailing_zero(amt)
-    amt_string = amt.to_s
-    amt_string.split(".0").size == 1 ? amt_string.sub(".0", "") : amt_string
   end
 
 end

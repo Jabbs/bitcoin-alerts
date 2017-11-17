@@ -1,5 +1,6 @@
 class Rule < ActiveRecord::Base
   belongs_to :strategy
+  belongs_to :channel
 
   validates :operator, presence: true
 
@@ -38,15 +39,16 @@ class Rule < ActiveRecord::Base
   end
 
   def generate_message
+    paired_symbol = self.channel.currency.paired_symbol
     if self.custom_function.present? && self.custom_function == "passed_meaningful_barrier_ceiling?"
       ceiling = Numbers.next_meaningful_amount(self.comparison_value_ten_minutes_ago, "up")
-      ceiling.present? ? "$" + ceiling.to_s : ""
+      ceiling.present? ? Numbers.format_number_to_str_decimal(ceiling) + " " + paired_symbol : ""
     elsif self.custom_function.present? && self.custom_function == "passed_meaningful_barrier_floor?"
       floor = Numbers.next_meaningful_amount(self.comparison_value_ten_minutes_ago, "down")
-      floor.present? ? "$" + floor.to_s : ""
+      floor.present? ? Numbers.format_number_to_str_decimal(floor) + " " + paired_symbol : ""
     elsif self.percent_increase.present? || self.percent_decrease.present? || self.ceiling.present? || self.floor.present?
       comparison_value = self.comparison_value
-      comparison_value.present? ? "$" + comparison_value.to_s : ""
+      comparison_value.present? ? Numbers.format_number_to_str_decimal(comparison_value) + " " + paired_symbol : ""
     else
       ""
     end

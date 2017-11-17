@@ -17,6 +17,11 @@ module Numbers
     (percent.to_f/100.to_f)*total.to_f
   end
 
+  def self.format_number_to_str_decimal(amt)
+    amt_string = BigDecimal.new(amt, 10).to_s
+    amt_string.split(".0").size == 1 ? amt_string.sub(".0", "") : amt_string
+  end
+
   def self.next_meaningful_amount(amount, dir="up")
     n = amount.to_s
     left_of_zero = n.split(".").first
