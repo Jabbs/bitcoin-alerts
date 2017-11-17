@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title><%= t('application.root.name') %></title>
+		<style type="text/css">
+			body { font-family: sans-serif, "Helvetica Neue", Helvetica, Arial; color: #253238; }
+			h2 { font-size: 32px; margin: 0px; }
+			h3 { margin: 0px; }
+			table { border-spacing: 0; width: 100%; }
+			hr { border: none; border-top: solid 3px #ffffff; color: #ffffff; background-color: #ffffff; }
+			a { color: #ffffff; text-decoration: none; }
+			.big { font-size: 24px; font-weight: 400; line-height: 30px; }
+			.large { font-size: 18px; font-weight: 400; }
+      .small { font-size: 14px; }
+			.signature { color: #868686; }
+			.outer-table { background: #ffffff; padding: 0px; }
+			.inner-table {
+        text-align: left; background: <%= @currency.color_hexidecimal %>; margin: 5px 0 0 0; padding: 0px; max-width: 550px;
+        -webkit-border-radius: 15px; -moz-border-radius: 15px; border-radius: 15px;
+        padding: 40px; color: #ffffff
+      }
+			.center { text-align: center; }
+			.pull-right { float: right !important; }
+			.rounded-border {border: 1px solid #d1d7da; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; }
+			.summary { padding: 10px; background: #6681b3; color: white; }
+			.bottom-summary { padding: 4px; background: #6681b3; }
+			.date { font-size: 0.9em; padding-left: 10px; }
+			.footer { color: #888888; font-size: 11px; font-weight: 400; padding: 5px 0px 0px 0px; line-height: 14px; }
+			.footer a { color: #253238; text-decoration: none; }
+			.btn { display: inline-block; border-radius: 8px; text-decoration: none; cursor: pointer; text-align: center;
+				padding: 12px 40px; font-size: 16px; font-weight: 400; color: #253238; background-color: #e0e0e0; border-color: #ccc;
+			}
+			.coin {
+				position: relative;
+				top: -2px;
+				left: -2px;
+			}
+			.name {
+				height: 0px;
+			}
+			.name-inner {
+				font-size: 44px;
+				padding-left: 110px;
+				padding-top: 25px;
+			}
+      .coin-chart {
+        color: #253238;
+        -webkit-border-radius: 15px; -moz-border-radius: 15px; border-radius: 15px;
+        width: 100%;
+        background: white;
+        height: 400px;
+      }
+      .box {
+        width: 100%;
+        position: relative;
+      }
+      .vol_box {
+        width: 100%;
+        position: relative;
+        background-color: #253238;
+      }
+      .vol_first {
+        -webkit-border-bottom-left-radius: 15px; -moz-border-bottom-left-radius: 15px; border-bottom-left-radius: 15px;
+      }
+      .vol_last {
+        -webkit-border-bottom-right-radius: 15px; -moz-border-bottom-right-radius: 15px; border-bottom-right-radius: 15px;
+      }
+      .line {
+        position: relative;
+        width: 1px;
+        z-index: 3;
+      }
+      .price {
+        font-size: 11px;
+        height: 14px;
+        text-align: center;
+        position: relative;
+        z-index: 2;
+      }
+      .volume {
+        height: 0px;
+        text-align: center;
+        font-size: 11px;
+        position: relative;
+      }
+      .p_date {
+        color: white;
+        height: 0px;
+        text-align: center;
+        font-size: 11px;
+        position: relative;
+        top: -15px;
+      }
+		</style>
+	</head>
+	<body>
+		<table class="outer-table">
+			<tr>
+				<td>
+					<table class="inner-table">
+            <tr>
+              <td style="padding-bottom:20px;">
+								<div class="name">
+									<div class="name-inner"><%= @currency.name %></div>
+								</div>
+								<img src="https://s3.amazonaws.com/bitalertnow/currencies/<%= @currency.symbol %>.png" width="100" height="100" class="coin">
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <table class="coin-chart">
+                  <tr>
+                    <% @daily_infos.each do |daily_info| %>
+                      <% color = daily_info.close >= daily_info.open ? "#488444" : "#FF5E32" %>
+                      <% chart_height = @high - @low %>
+                      <% box_height = ((daily_info.close - daily_info.open).abs / chart_height) * 100 %>
+                      <% box_from_bottom = ((([daily_info.close, daily_info.open].min - @low) / chart_height) * 100).round(2) %>
+                      <% bottom_adj = chart_height / 4 %>
+                      <td valign="bottom" style="width: <%= 100.to_f / @daily_infos.count.to_f %>%;">
+                        <div class="box" style="bottom: <%= box_from_bottom + bottom_adj %>px; height: <%= box_height %>px; background-color: <%= color %>;">
+                        </div>
+                        <div style="height:0px;">
+                          <% top_line_height = ((daily_info.high - [daily_info.close, daily_info.open].max) / chart_height) * 100 %>
+                          <div class="line" style="left: 49%; bottom: <%= box_from_bottom + box_height + top_line_height + bottom_adj %>px; height: <%= top_line_height %>px; background-color: <%= color %>;"></div>
+                          <div class="price" style="bottom: <%= box_from_bottom + box_height + (top_line_height * 2) + bottom_adj + 14 %>px;">
+                            $<%= daily_info.high.round %>
+                          </div>
+                        </div>
+                        <div style="height:0px;">
+                          <% bottom_line_height = (([daily_info.close, daily_info.open].min - daily_info.low) / chart_height) * 100 %>
+                          <div class="line" style="left: 49%; bottom: <%= box_from_bottom + bottom_adj %>px; height: <%= bottom_line_height %>px; background-color: <%= color %>;"></div>
+                          <div class="price" style="bottom: <%= box_from_bottom + bottom_adj %>px;">
+                            $<%= daily_info.low.round %>
+                          </div>
+                        </div>
+                        <div style="height:0px;">
+                          <% vol_top = @vol_avg * 3 %>
+                          <% if daily_info.volume >= vol_top %>
+                            <% vol_height = bottom_adj %>
+                          <% else %>
+                            <% vol_height = (daily_info.volume / vol_top) * bottom_adj %>
+                          <% end %>
+                          <div class="vol_box <%= 'vol_first' if daily_info == @daily_infos[0] %> <%= 'vol_last' if daily_info == @daily_infos.last %>" style="height: <%= vol_height %>px; bottom: <%= vol_height %>px;">
+                          </div>
+                        </div>
+                        <div class="volume" style="bottom: <%= vol_height + 12 %>px;">
+                          <%= number_to_human(daily_info.volume, precision: 2, units: {thousand: "k", million: "m", billion: "b"}, format: "%n%u") %>
+                        </div>
+                        <div class="p_date">
+                          <%= daily_info.date.strftime("%-m/%-d") %>
+                        </div>
+                      </td>
+                    <% end %>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td class="footer">
+					<table>
+						<tr>
+							<td>
+								This email was sent by <%= link_to t('application.root.name'), root_url %>.
+								If you don't want to receive emails in the future
+								<%= link_to 'unsubscribe here', unsubscribe_url(unsubscribe_id: @user.auth_token) %>.
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</body>
+</html>

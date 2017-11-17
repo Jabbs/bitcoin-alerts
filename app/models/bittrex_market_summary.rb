@@ -21,6 +21,29 @@ class BittrexMarketSummary < ActiveRecord::Base
     end
   end
 
+  def self.daily_info(date, lookback_days=7, market_name="USDT-BTC")
+    ActiveRecord::Base.logger.level = 1
+    data = []
+    lookback_days.times do
+      yesterdays_bms = BittrexMarketSummary.where(market_name: market_name).where("created_at < ?", date.beginning_of_day.yesterday + 5.minutes).where("created_at > ?", date.beginning_of_day.yesterday).order(:id).first
+      todays_bms = BittrexMarketSummary.where(market_name: market_name).where("created_at < ?", date.beginning_of_day + 5.minutes).where("created_at > ?", date.beginning_of_day).order(:id).first
+      info = {}
+      info[:date] = date.yesterday.to_date
+      info[:open] = yesterdays_bms.try(:last)
+      info[:close] = todays_bms.try(:last)
+      info[:high] = todays_bms.try(:high)
+      info[:low] = todays_bms.try(:low)
+      info[:volume] = todays_bms.try(:volume)
+      data << OpenStruct.new(info)
+      date = date + 1.day
+    end
+    data
+  end
+
+  def self.average_volume(market_name="USDT-BTC", days=30)
+    BittrexMarketSummary.where(market_name: market_name).where("created_at > ?", days.days.ago).average(:volume)
+  end
+
   def recent_btc_price
     BittrexMarketSummary.where(market_name: "USDT-BTC").where("created_at < ?", self.created_at).where("created_at > ?", self.created_at - 2.minutes).first.try(:last)
   end
