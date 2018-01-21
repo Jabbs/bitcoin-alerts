@@ -8,6 +8,7 @@ class TaxService < ActiveRecord::Base
     @row_number = 0
     symbols = ["USD", "BTC", "LTC", "ETH", "LSK", "NEO", "XRP", "BTG"]
     @report = []
+    trezor_times = []
 
     CSV.foreach("lib/taxes/transactions.csv", headers: false, :encoding => 'windows-1251:utf-8') do |row|
       next unless row[0].present?
@@ -55,6 +56,8 @@ class TaxService < ActiveRecord::Base
       # TODO: TEZOR TRANSFERS
       # TODO: BTG
 
+      trezor_times << [@row_number, trx_datetime_str] if @receiving_account.include?("TREZOR")
+
       if @source_account_symbol == @receiving_account_symbol
         next
       elsif @source_account_symbol == "USD"
@@ -87,10 +90,10 @@ class TaxService < ActiveRecord::Base
     puts "-------------------------------------------------"
     puts "-------------------------------------------------"
     puts "-------------------------------------------------"
-    TaxService.print_report
+    trezor_times
   end
 
-  def self.price_fmv(transaction_time_str, symbol="BTC-USD")
+  def self.calculate_price_fmv(transaction_time_str, symbol="BTC-USD")
     date = transaction_time_str.split(" ")[0]
     time = transaction_time_str.split(" ")[1]
     transaction_time  = ("20" + date.split("/")[2] + "-" + date.split("/")[0] + "-" + date.split("/")[1] + " #{time}").to_datetime
