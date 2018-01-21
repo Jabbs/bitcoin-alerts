@@ -94,9 +94,7 @@ class TaxService < ActiveRecord::Base
   end
 
   def self.calculate_price_fmv(transaction_time_str, symbol="BTC-USD")
-    date = transaction_time_str.split(" ")[0]
-    time = transaction_time_str.split(" ")[1]
-    transaction_time  = ("20" + date.split("/")[2] + "-" + date.split("/")[0] + "-" + date.split("/")[1] + " #{time}").to_datetime
+    transaction_time  = transaction_time_str.to_datetime
     transaction_time = transaction_time - 6.hours # CST to UTC
     quote = Quote.where(currency_pair: symbol).where("created_at < ?", transaction_time).order("created_at desc").first
     Quote.get_previous_quotes(quote, 10).first.price
