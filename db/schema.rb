@@ -120,6 +120,16 @@ ActiveRecord::Schema.define(version: 20171112173341) do
   add_index "friendly_id_slugs", ["sluggable_id"], name: "index_friendly_id_slugs_on_sluggable_id", using: :btree
   add_index "friendly_id_slugs", ["sluggable_type"], name: "index_friendly_id_slugs_on_sluggable_type", using: :btree
 
+  create_table "lots", force: :cascade do |t|
+    t.string   "receiving_account_symbol"
+    t.decimal  "aquired_asset_amount",     precision: 25, scale: 10
+    t.decimal  "remaining_asset_amount",   precision: 25, scale: 10
+    t.decimal  "usd_cost",                 precision: 25, scale: 10
+    t.datetime "transaction_time"
+    t.datetime "created_at",                                         null: false
+    t.datetime "updated_at",                                         null: false
+  end
+
   create_table "orders", force: :cascade do |t|
     t.string   "client_id",       null: false
     t.string   "price"
