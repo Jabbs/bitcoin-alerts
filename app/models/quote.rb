@@ -12,6 +12,23 @@ class Quote < ActiveRecord::Base
   has_many :trades
   has_many :slack_notifications
 
+  def self.income_estimate(price=8500, interest=0.075, cycles=10, days_per_cycle=150)
+    d = Date.today
+    bank = 0
+    btc = 10.127
+    puts "-----------------------------------------------------------"
+    puts "#{interest * 100}% INTEREST, #{days_per_cycle} DAYS PER DOUBLING:"
+    puts "-----------------------------------------------------------"
+    cycles.times do
+      d = d + days_per_cycle.days
+      price = price * 2
+      bank = bank + (interest*btc*price)
+      btc = btc - (interest*btc)
+      puts d.strftime("%m/%d/%Y") + " (" + "Bank: $" + bank.round(2).to_s + ", " + "Price: $" + price.round(2).to_s + ", " + "BTC: " + btc.round(8).to_s + ")"
+    end
+    puts "-----------------------------------------------------------"
+  end
+
   def self.average_price_per_hour
     ActiveRecord::Base.logger.level = 1
     first_quote = Quote.where("traded_at >= ?", 8.days.ago).where(currency_pair: "LTC-USD").order("traded_at asc").first

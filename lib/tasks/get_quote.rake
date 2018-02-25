@@ -12,4 +12,10 @@ namespace :bitcoin do
     end_time = DateTime.now
     Rails.logger.info "Completed sync. #{begin_time.to_i - end_time.to_i} seconds"
   end
+
+  desc 'Check TD indicators'
+  task :check_td_indicator => :environment do
+    IndicatorService.send_slack_messages
+  end
+
 end

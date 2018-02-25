@@ -8,7 +8,6 @@ class TaxService < ActiveRecord::Base
     @row_number = 0
     symbols = ["USD", "BTC", "LTC", "ETH", "LSK", "NEO", "XRP", "BTG"]
     @report = []
-    trezor_times = []
 
     CSV.foreach("lib/taxes/transactions.csv", headers: false, :encoding => 'windows-1251:utf-8') do |row|
       next unless row[0].present?
@@ -53,12 +52,16 @@ class TaxService < ActiveRecord::Base
       @source_account_symbol    = symbols.select { |s| @source_account.include?(s) }.try(:first)
       @receiving_account_symbol = symbols.select { |s| @receiving_account.include?(s) }.try(:first)
 
-      # TODO: TEZOR TRANSFERS
-      # TODO: BTG
-
-      trezor_times << [@row_number, trx_datetime_str] if @receiving_account.include?("TREZOR")
-
-      if @source_account_symbol == @receiving_account_symbol
+      if @receiving_account.include?("TREZOR")
+        next
+        # @usd_sell = @btc_transfer * @gdax_btc_price
+        # @usd_buy = @btc_transfer * @gdax_btc_price
+        # @btc_buy = @btc_transfer
+        # @btc_sell = @btc_transfer
+        # TaxService.sell_source_asset
+        # lot = Lot.create!(receiving_account_symbol: @receiving_account_symbol, aquired_asset_amount: TaxService.asset_buy, remaining_asset_amount: TaxService.asset_buy, usd_cost: @usd_buy, transaction_time: @transaction_time)
+        # TaxService.print_lot(lot)
+      elsif @source_account_symbol == @receiving_account_symbol
         next
       elsif @source_account_symbol == "USD"
         # bought an asset with USD
@@ -90,7 +93,7 @@ class TaxService < ActiveRecord::Base
     puts "-------------------------------------------------"
     puts "-------------------------------------------------"
     puts "-------------------------------------------------"
-    trezor_times
+    TaxService.print_report
   end
 
   def self.calculate_price_fmv(transaction_time_str, symbol="BTC-USD")
@@ -117,36 +120,42 @@ class TaxService < ActiveRecord::Base
   def self.sell_source_asset
     sell_price = @usd_sell / TaxService.asset_sell
     sell_amount_left = TaxService.asset_sell
-    # byebug if @row_number == 8
     Lot.where(receiving_account_symbol: @source_account_symbol).where.not(remaining_asset_amount: 0).order(:id).each do |lot|
       next if sell_amount_left == 0
       if lot.remaining_asset_amount >= sell_amount_left
         cost = (sell_amount_left / lot.aquired_asset_amount) * lot.usd_cost
         proceeds = sell_price * sell_amount_left
-        r = [@source_account_symbol, lot.transaction_time, @transaction_time, proceeds, cost, lot.id, "meh"]
-        @report << r
-        TaxService.print_report_row(r)
         new_remaining_asset_amount = lot.remaining_asset_amount - sell_amount_left
+        old_remaining_asset_amount = lot.remaining_asset_amount
         lot.update_attribute(:remaining_asset_amount, new_remaining_asset_amount)
         sell_amount_left = 0
-      else
-        proceeds = sell_price * lot.remaining_asset_amount
-        r = [@source_account_symbol, lot.transaction_time, @transaction_time, proceeds, lot.usd_cost, lot.id, "psh"]
+        lot = lot.reload
+        r = [@source_account_symbol, lot.transaction_time, @transaction_time, proceeds, cost, lot.id, lot.usd_cost, lot.aquired_asset_amount, lot.remaining_asset_amount, (old_remaining_asset_amount - new_remaining_asset_amount), "meh"]
         @report << r
         TaxService.print_report_row(r)
+      else
+        cost = (lot.remaining_asset_amount / lot.aquired_asset_amount) * lot.usd_cost
+        proceeds = sell_price * lot.remaining_asset_amount
         sell_amount_left = sell_amount_left - lot.remaining_asset_amount
+        old_remaining_asset_amount = lot.remaining_asset_amount
+        lot.update_attribute(:remaining_asset_amount, 0)
+        lot = lot.reload
+        r = [@source_account_symbol, lot.transaction_time, @transaction_time, proceeds, cost, lot.id, lot.usd_cost, lot.aquired_asset_amount, lot.remaining_asset_amount, old_remaining_asset_amount, "psh"]
+        @report << r
+        TaxService.print_report_row(r)
       end
     end
   end
 
-  def self.print_report
+  def self.print_report(show_headers=true)
+    puts "(a) Description of Property,(b) Date Aquired,(c) Date Sold,(d) Proceeds (Sales Price),(e) Cost or other basis,(h) Gain or Loss,Lot ID,Lot Cost,Lot Amount,Lot Remaining Amt,Lot Amt Sold" if show_headers
     @report.each do |r|
       TaxService.print_report_row(r)
     end
   end
 
   def self.print_report_row(r)
-    puts r[0] + ", " + r[1].in_time_zone("Central Time (US & Canada)").strftime("%m/%d/%y") + ", " + r[2].in_time_zone("Central Time (US & Canada)").strftime("%m/%d/%y") + ", " + r[3].round(2).to_s + ", " + r[4].round(2).to_s + ", " + (r[3] - r[4]).round(2).to_s + ", LOT: #{r[5]}" + ", #{r[6]}"
+    puts r[0] + "," + r[1].in_time_zone("Central Time (US & Canada)").strftime("%m/%d/%y") + "," + r[2].in_time_zone("Central Time (US & Canada)").strftime("%m/%d/%y") + "," + r[3].round(2).to_s + "," + r[4].round(2).to_s + "," + (r[3] - r[4]).round(2).to_s + ", #{r[5]}" + "," + r[6].round(2).to_s + "," + r[7].to_s + "," + r[8].to_s + "," + r[9].to_s + "," + r[10].to_s
   end
 
   def self.asset_buy
