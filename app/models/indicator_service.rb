@@ -23,7 +23,7 @@ class IndicatorService < ActiveRecord::Base
         send_notification = true if IndicatorService.candle_is_eight_or_nine?(candle)
         info << IndicatorService.print_td_candle_info(candle, " " + k) + "\n" unless v == 1.week && !send_notification # skip the 1w if no notifications for the others
       end
-      SlackService.send_slack_notification(info.join, "td-indicator") if send_notification
+      SlackService.send_slack_notification(info.join, "indicator-alerts") if send_notification
     end
   end
 
