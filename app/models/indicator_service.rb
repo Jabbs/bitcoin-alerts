@@ -26,7 +26,6 @@ class IndicatorService < ActiveRecord::Base
       end
       if send_notification
         SlackService.send_slack_notification(info.join, "indicator-alerts")
-        TwitterService.client.upcate(info.join) if currency_pair == 'BTC-USD'
       end
     end
   end
