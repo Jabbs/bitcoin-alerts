@@ -5,6 +5,7 @@ gem 'jbuilder',     '~> 2.0'
 gem 'rails',        '~> 4.2.0'
 gem 'rails_admin',  '~> 0.7.0'
 gem 'responders',   '~> 2.0'
+gem 'twitter'
 
 gem 'activeresource'
 gem 'ancestry'

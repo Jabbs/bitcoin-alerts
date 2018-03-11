@@ -16,14 +16,18 @@ class IndicatorService < ActiveRecord::Base
   def self.send_slack_messages(ending_time=Time.zone.now)
     CoinbaseService::CURRENCY_PAIRS.each do |currency_pair|
       info = []
-      info << currency_pair + "\n"
+      info << "TD Indicator Alert: " + currency_pair + "\n"
       send_notification = false
       IndicatorService::INTERVALS.each do |k, v|
         candle = IndicatorService.td_candles(ending_time, currency_pair, v).last
-        send_notification = true if IndicatorService.candle_is_eight_or_nine?(candle)
+        candle_created_at = candle[3]
+        send_notification = true if IndicatorService.candle_is_eight_or_nine?(candle) && candle_created_at > 5.minutes.ago
         info << IndicatorService.print_td_candle_info(candle, " " + k) + "\n" unless v == 1.week && !send_notification # skip the 1w if no notifications for the others
       end
-      SlackService.send_slack_notification(info.join, "indicator-alerts") if send_notification
+      if send_notification
+        SlackService.send_slack_notification(info.join, "indicator-alerts")
+        TwitterService.client.upcate(info.join) if currency_pair == 'BTC-USD'
+      end
     end
   end
 
@@ -53,14 +57,14 @@ class IndicatorService < ActiveRecord::Base
       color = candle[1].upcase
       count = candle[2].to_s
       spacing = color == "GREEN" ? " " : "   "
-      message = color + spacing + count + " (" + time + " " + close + ")"
+      message = color + spacing + count
       if (color == "RED" && count == "8") || (color == "RED" && count == "9")
-        message = message + " ***BUY"
+        message = message + " OVER SOLD" + " (" + close + ")"
       elsif (color == "GREEN" && count == "8") || (color == "GREEN" && count == "9")
-        message = message + " ***SELL"
+        message = message + " OVER BOUGHT" + " (" + close + ")"
       end
     else
-      message = "MISSING" + " (" + time + " " + close + ")"
+      message = "MISSING"
     end
     if prefix
       prefix + " | " + message
